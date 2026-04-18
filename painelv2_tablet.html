@@ -7,20 +7,24 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-dark: #0f0f0f;
-            --card-bg: #1a1a1a;
+            --bg-dark: #050505;
+            --sidebar-bg: #000000;
+            --card-bg: #121212;
             --accent: #e67e22;
             --green: #2ecc71;
             --red: #e74c3c;
             --text: #ffffff;
-            --gold: #ffcc00;
+            --gold: #f1c40f;
+            --border: #222;
         }
 
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
         body {
-            font-family: 'Segoe UI', sans-serif;
             background: var(--bg-dark);
             color: var(--text);
             margin: 0;
@@ -30,190 +34,201 @@
             overflow: hidden;
         }
 
-        /* Sidebar - Fixa na esquerda */
+        /* Sidebar Profissional */
         .sidebar {
-            width: 240px;
-            background: #000;
-            padding: 15px;
+            width: 220px;
+            background: var(--sidebar-bg);
+            padding: 20px 15px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            border-right: 1px solid #333;
+            gap: 12px;
+            border-right: 1px solid var(--border);
             flex-shrink: 0;
+        }
+
+        .brand-logo {
+            font-weight: 800;
+            color: var(--accent);
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
         }
 
         .status-badge {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             padding: 12px;
-            background: #111;
-            border-radius: 8px;
+            background: #0a0a0a;
+            border-radius: 12px;
             margin-bottom: 10px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            border: 1px solid #222;
+            font-size: 0.75rem;
+            font-weight: 800;
+            border: 1px solid var(--border);
+            text-transform: uppercase;
         }
 
-        .dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; }
-        .dot-green { background-color: var(--green); box-shadow: 0 0 8px var(--green); }
-        .dot-red { background-color: var(--red); box-shadow: 0 0 8px var(--red); }
+        .dot { height: 8px; width: 8px; border-radius: 50%; }
+        .dot-green { background-color: var(--green); box-shadow: 0 0 10px var(--green); }
+        .dot-red { background-color: var(--red); box-shadow: 0 0 10px var(--red); }
 
         .btn-sidebar {
-            background: var(--card-bg);
-            color: white;
-            border: 1px solid #333;
-            padding: 12px;
-            border-radius: 8px;
+            background: transparent;
+            color: #888;
+            border: 1px solid transparent;
+            padding: 14px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.3s;
             display: flex;
             align-items: center;
-            gap: 10px;
-            text-align: left;
-            width: 100%;
+            gap: 12px;
             font-size: 0.9rem;
+            font-weight: 600;
         }
 
-        .btn-sidebar:hover { background: #222; }
-        .btn-sidebar.active { background: var(--accent); border-color: var(--accent); font-weight: bold; }
+        .btn-sidebar:hover { background: #111; color: #fff; }
+        .btn-sidebar.active { 
+            background: rgba(230, 126, 34, 0.1); 
+            border-color: var(--accent); 
+            color: var(--accent);
+        }
 
-        /* Conteúdo Principal */
+        /* Área Principal */
         .main-content { 
             flex: 1; 
             display: flex; 
             flex-direction: column; 
-            overflow: hidden;
             background: #000;
         }
 
-        /* AJUSTE DAS COLUNAS PARA NÃO CORTAR */
         #secao-pedidos { 
-            display: flex; 
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             flex: 1; 
-            gap: 10px; 
-            padding: 10px; 
-            overflow-x: auto; /* Permite scroll horizontal se as colunas forem largas */
-            -webkit-overflow-scrolling: touch;
+            gap: 15px; 
+            padding: 15px;
+            overflow: hidden;
         }
 
         .coluna { 
-            flex: 1; 
-            min-width: 300px; /* Largura mínima para o texto não encavalar */
-            max-width: 400px; 
             background: #0a0a0a; 
-            border-radius: 10px; 
-            border: 1px solid #222; 
+            border-radius: 16px; 
+            border: 1px solid var(--border); 
             display: flex; 
             flex-direction: column; 
-            height: calc(100vh - 20px);
+            max-height: 100%;
         }
 
         .col-header { 
-            padding: 12px; 
-            border-bottom: 1px solid #222; 
-            font-size: 0.85rem; 
-            font-weight: bold; 
+            padding: 18px; 
+            font-size: 0.8rem; 
+            font-weight: 800; 
             text-transform: uppercase; 
-            text-align: center;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+            border-radius: 16px 16px 0 0;
         }
 
-        /* Cards de Pedidos */
+        /* Cards de Pedidos Estilo Dashboard */
         .pedido-card {
             background: var(--card-bg);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
-            border-left: 4px solid var(--accent);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+            border-top: 4px solid var(--accent);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             animation: fadeIn 0.3s ease;
+        }
+
+        .pedido-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .pedido-cliente { font-weight: 800; font-size: 1.05rem; color: #fff; }
+        .pedido-hora { font-weight: 800; color: var(--accent); background: rgba(230,126,34,0.1); padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; }
+
+        .pedido-itens {
+            background: #000;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.95rem;
+            color: #bbb;
+            border: 1px solid #1a1a1a;
+            line-height: 1.5;
         }
 
         .btn-status-alt {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             margin-top: 10px;
             border: none;
-            border-radius: 5px;
-            font-weight: bold;
+            border-radius: 8px;
+            font-weight: 800;
             cursor: pointer;
             color: white;
-            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            transition: 0.2s;
         }
 
-        /* Seção de Stock */
-        #secao-stock, #secao-impressora { display: none; padding: 20px; overflow-y: auto; flex: 1; }
+        .btn-status-alt:active { transform: scale(0.98); }
 
-        .cat-header { color: var(--gold); border-bottom: 2px solid var(--gold); margin: 25px 0 10px 0; padding-bottom: 5px; font-size: 1.1rem; text-transform: uppercase; }
-        
+        /* Estilo Stock */
+        #secao-stock, #secao-impressora { display: none; padding: 30px; overflow-y: auto; flex: 1; }
         .card-stock-item {
             background: var(--card-bg);
-            padding: 12px;
-            border-radius: 10px;
+            padding: 16px;
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #222;
+            border: 1px solid var(--border);
             margin-bottom: 10px;
-            gap: 10px;
         }
 
-        .btn-action {
-            background: #2a2a2a;
-            color: var(--gold);
-            border: 1px dashed #555;
-            padding: 8px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            display: inline-block;
-            margin-top: 5px;
-        }
+        /* Scrollbars Elegantes */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 
-        .btn-status {
-            padding: 10px;
-            border-radius: 6px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            min-width: 110px;
-            color: white;
-            font-size: 0.8rem;
-        }
-
-        /* Impressão */
-        #area-impressao { display: none; }
-        @media print {
-            body * { display: none !important; }
-            #area-impressao { display: block !important; color: black !important; background: white !important; font-family: 'Courier New', monospace; width: 100%; font-size: 12pt; padding: 10px; }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <h2 style="color: var(--accent); font-size: 1.2rem; margin-bottom: 5px;">O BOM SABOR</h2>
+        <div class="brand-logo">O BOM SABOR</div>
         
         <div id="servico-status" class="status-badge">
             <span id="indicador-dot" class="dot"></span>
-            <span id="indicador-texto">CARREGANDO...</span>
+            <span id="indicador-texto">...</span>
         </div>
         
         <button id="btn-pedidos" class="btn-sidebar active" onclick="mostrarTab('pedidos')">
-            <i class="fas fa-shopping-cart"></i> Encomendas
+            <i class="fas fa-receipt"></i> Pedidos
         </button>
         <button id="btn-stock" class="btn-sidebar" onclick="mostrarTab('stock')">
-            <i class="fas fa-boxes"></i> Stock e Preços
+            <i class="fas fa-utensils"></i> Cozinha/Stock
         </button>
         <button id="btn-impressora" class="btn-sidebar" onclick="mostrarTab('impressora')">
-            <i class="fas fa-print"></i> Impressora
+            <i class="fas fa-print"></i> Terminal
         </button>
 
         <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
-            <button class="btn-sidebar" onclick="toggleServico()" style="background: #111;">
-                <i class="fas fa-power-off"></i> Abrir/Fechar Loja
+            <button class="btn-sidebar" onclick="toggleServico()">
+                <i class="fas fa-store"></i> Abrir/Fechar
             </button>
-            <button class="btn-sidebar" onclick="limparHistorico()" style="color: var(--red);">
-                <i class="fas fa-trash-alt"></i> Limpar Pedidos
+            <button class="btn-sidebar" onclick="limparHistorico()" style="color: var(--red); opacity: 0.7;">
+                <i class="fas fa-eraser"></i> Limpar Tudo
             </button>
         </div>
     </div>
@@ -221,30 +236,31 @@
     <div class="main-content">
         <div id="secao-pedidos">
             <div class="coluna">
-                <div class="col-header" style="color: var(--accent)">Novos / Em Curso</div>
-                <div id="lista-pedidos" style="padding:10px; overflow-y: auto; flex:1;"></div>
+                <div class="col-header" style="color: var(--accent)">Entrada / Cozinha</div>
+                <div id="lista-pedidos" style="padding:15px; overflow-y: auto; flex:1;"></div>
             </div>
             <div class="coluna">
-                <div class="col-header" style="color: var(--green)">Pronto ✅</div>
-                <div id="lista-pronto" style="padding:10px; overflow-y: auto; flex:1;"></div>
+                <div class="col-header" style="color: var(--green)">Pronto para Entrega</div>
+                <div id="lista-pronto" style="padding:15px; overflow-y: auto; flex:1;"></div>
             </div>
             <div class="coluna">
-                <div class="col-header" style="color: #888">Histórico</div>
-                <div id="lista-historico" style="padding:10px; overflow-y: auto; flex:1;"></div>
+                <div class="col-header" style="color: #666">Histórico Recente</div>
+                <div id="lista-historico" style="padding:15px; overflow-y: auto; flex:1;"></div>
             </div>
         </div>
 
         <div id="secao-stock">
-            <h2 style="color: var(--accent); margin-top:0;">Gestão de Produtos</h2>
+            <h2 style="color: var(--accent); margin-top:0; font-weight:800;">Gestão de Menu</h2>
             <div id="render-stock-container"></div>
         </div>
 
         <div id="secao-impressora">
-            <h2 style="color: var(--accent); margin-top:0;">Impressora</h2>
-            <div style="background: #111; padding: 20px; border-radius: 10px; border: 1px solid #333;">
-                <p>Estado: <strong style="color:var(--green)">Conectada</strong></p>
-                <button class="btn-sidebar" style="justify-content: center;" onclick="imprimirTeste()">
-                    <i class="fas fa-print"></i> Testar Impressão
+            <h2 style="color: var(--accent); margin-top:0;">Configuração Terminal</h2>
+            <div style="background: var(--card-bg); padding: 30px; border-radius: 16px; border: 1px solid var(--border); text-align: center;">
+                <i class="fas fa-print" style="font-size: 3rem; color: var(--accent); margin-bottom: 20px;"></i>
+                <p>Impressora de Talões: <strong style="color:var(--green)">ATIVA</strong></p>
+                <button class="btn-status-alt" style="background: #333; max-width: 300px; margin: 20px auto;" onclick="imprimirTeste()">
+                    Imprimir Talão de Teste
                 </button>
             </div>
         </div>
@@ -253,7 +269,7 @@
     <div id="area-impressao"></div>
 
     <script>
-        // CONFIG FIREBASE
+        // [MESMO SCRIPT FIREBASE E LÓGICA QUE JÁ TENS]
         const firebaseConfig = {
             apiKey: "AIzaSyDXdL8jBVtbPb7igyrorQMK2_hlfxHrB5Q",
             authDomain: "o-bom-sabor.firebaseapp.com",
@@ -263,7 +279,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // LISTA DE PRODUTOS
+        // LISTA DE PRODUTOS COMPLETA
         const produtos = [
             { nome: "Petinga frita c/ arroz de tomate", dia: "SEGUNDA-FEIRA", cat: "Pratos do Dia", temMeia: true },
             { nome: "Bacalhau à Brás", dia: "SEGUNDA-FEIRA", cat: "Pratos do Dia", temMeia: true },
@@ -328,7 +344,7 @@
 
         function mostrarTab(tab) {
             ['pedidos', 'stock', 'impressora'].forEach(s => {
-                document.getElementById('secao-' + s).style.display = (s === tab ? (s === 'pedidos' ? 'flex' : 'block') : 'none');
+                document.getElementById('secao-' + s).style.display = (s === tab ? (s === 'pedidos' ? 'grid' : 'block') : 'none');
                 document.getElementById('btn-' + s).classList.toggle('active', s === tab);
             });
             if(tab === 'stock') carregarStock();
@@ -345,7 +361,8 @@
 
             categorias.forEach(cat => {
                 const h = document.createElement('h3');
-                h.className = 'cat-header'; h.innerText = cat;
+                h.className = 'cat-header'; h.style = "color:var(--gold); border-bottom:1px solid #333; padding:20px 0 10px 0; text-transform:uppercase; font-size:0.9rem;";
+                h.innerText = cat;
                 container.appendChild(h);
 
                 produtos.filter(p => p.cat === cat).forEach(p => {
@@ -360,8 +377,8 @@
 
                     card.innerHTML = `
                         <div style="flex:1;">
-                            <strong id="name-${id}">${p.nome}</strong>
-                            <div>${botoesPreco} <span class="btn-action" onclick="mudarNome('${id}')">Nome</span></div>
+                            <strong id="name-${id}" style="font-size:1.1rem;">${p.nome}</strong>
+                            <div style="margin-top:8px;">${botoesPreco} <span class="btn-action" onclick="mudarNome('${id}')">Editar Nome</span></div>
                         </div>
                         <div id="status-btn-container-${id}"></div>
                     `;
@@ -373,9 +390,8 @@
                             if (d.nome_custom) document.getElementById(`name-${id}`).innerText = d.nome_custom;
                             if (document.getElementById(`val-${id}`)) document.getElementById(`val-${id}`).innerText = (d.preco || 0).toFixed(2) + "€";
                             if (document.getElementById(`val-meia-${id}`)) document.getElementById(`val-meia-${id}`).innerText = (d.preco_meia || 0).toFixed(2) + "€";
-                            
                             const btnCont = document.getElementById(`status-btn-container-${id}`);
-                            btnCont.innerHTML = `<button class="btn-status" onclick="toggleDispo('${id}', ${d.esgotado})" style="background: ${d.esgotado ? 'var(--red)' : 'var(--green)'}">${d.esgotado ? 'ESGOTADO' : 'DISPONÍVEL'}</button>`;
+                            btnCont.innerHTML = `<button class="btn-status-alt" onclick="toggleDispo('${id}', ${d.esgotado})" style="background: ${d.esgotado ? 'var(--red)' : 'var(--green)'}; margin:0; width:140px;">${d.esgotado ? 'ESGOTADO' : 'DISPONÍVEL'}</button>`;
                         }
                     });
                 });
@@ -396,7 +412,6 @@
             db.ref('estoque/'+id).update({ esgotado: !status });
         }
 
-        // PEDIDOS
         db.ref('pedidos').on('value', snap => {
             const lN = document.getElementById('lista-pedidos');
             const lP = document.getElementById('lista-pronto');
@@ -409,29 +424,35 @@
                 const card = document.createElement('div');
                 card.className = 'pedido-card';
                 
-                let itensH = p.itens.map(i => `<div>${i.quantidade}x ${i.nome}</div>`).join('');
+                let itensH = p.itens.map(i => `<div>• ${i.quantidade}x <strong>${i.nome}</strong></div>`).join('');
                 card.innerHTML = `
-                    <div style="display:flex; justify-content:space-between;"><strong>#${id.slice(-4)} - ${p.cliente}</strong><span>${p.hora_levantamento || ''}</span></div>
-                    <div style="background:#222; padding:8px; margin:8px 0; border-radius:4px;">${itensH}</div>
-                    <div style="color:var(--gold)">Total: ${p.total}</div>
-                    <button class="btn-sidebar" onclick='imprimirPedido(${JSON.stringify(p)})' style="padding:5px; font-size:0.7rem; margin-top:5px; justify-content:center;"><i class="fas fa-print"></i> Imprimir</button>
+                    <div class="pedido-meta">
+                        <span class="pedido-cliente">#${id.slice(-4)} - ${p.cliente}</span>
+                        <span class="pedido-hora">${p.hora_levantamento || '--:--'}</span>
+                    </div>
+                    <div class="pedido-itens">${itensH}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin:10px 0;">
+                        <span style="color:var(--gold); font-weight:800; font-size:1.1rem;">${p.total}</span>
+                        <button onclick='imprimirPedido(${JSON.stringify(p)})' style="background:none; border:1px solid #444; color:#888; padding:5px 10px; border-radius:6px; cursor:pointer;"><i class="fas fa-print"></i></button>
+                    </div>
                 `;
 
                 if (!p.status || p.status === 'novo') {
-                    card.innerHTML += `<button class="btn-status-alt" style="background:var(--green)" onclick="mudarStatus('${id}', 'pronto')">PRONTO</button>`;
+                    card.innerHTML += `<button class="btn-status-alt" style="background:var(--green)" onclick="mudarStatus('${id}', 'pronto')">Marcar como Pronto</button>`;
                     lN.appendChild(card);
                 } else if (p.status === 'pronto') {
-                    card.innerHTML += `<button class="btn-status-alt" style="background:#555" onclick="mudarStatus('${id}', 'entregue')">ENTREGUE</button>`;
+                    card.innerHTML += `<button class="btn-status-alt" style="background:#444" onclick="mudarStatus('${id}', 'entregue')">Finalizar Entrega</button>`;
                     lP.appendChild(card);
                 } else {
-                    card.style.opacity = "0.6";
+                    card.style.opacity = "0.4";
+                    card.style.borderTopColor = "#333";
                     lH.appendChild(card);
                 }
             });
         });
 
         function mudarStatus(id, s) { db.ref('pedidos/' + id).update({ status: s }); }
-        function limparHistorico() { if(confirm("Apagar tudo?")) db.ref('pedidos').remove(); }
+        function limparHistorico() { if(confirm("Apagar todos os registos?")) db.ref('pedidos').remove(); }
 
         function imprimirPedido(p) {
             const area = document.getElementById('area-impressao');
@@ -439,7 +460,7 @@
             window.print();
         }
 
-        function imprimirTeste() { imprimirPedido({cliente:"TESTE", total:"0€", itens:[{quantidade:1, nome:"Teste Impressão"}]}); }
+        function imprimirTeste() { imprimirPedido({cliente:"TESTE SISTEMA", total:"0.00€", itens:[{quantidade:1, nome:"Teste Impressão OK"}]}); }
         function toggleServico() { db.ref('configuracoes/loja_aberta').once('value', s => db.ref('configuracoes/loja_aberta').set(!s.val())); }
 
         db.ref('configuracoes/loja_aberta').on('value', s => {

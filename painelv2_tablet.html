@@ -7,269 +7,128 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-dark: #050505;
-            --sidebar-bg: #000000;
-            --card-bg: #121212;
+            --bg-black: #000000;
+            --card-bg: #111111;
             --accent: #e67e22;
-            --green: #2ecc71;
-            --red: #e74c3c;
-            --text: #ffffff;
-            --gold: #f1c40f;
+            --green: #27ae60;
+            --red: #c0392b;
+            --text-gray: #888;
             --border: #222;
+            --gold: #f1c40f;
         }
 
-        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
-        body {
-            background: var(--bg-dark);
-            color: var(--text);
-            margin: 0;
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
+        body { 
+            background: var(--bg-black); 
+            color: white; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0; 
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden; 
         }
 
-        /* Sidebar Profissional */
-        .sidebar {
-            width: 220px;
-            background: var(--sidebar-bg);
-            padding: 20px 15px;
+        /* Sidebar */
+        .sidebar { 
+            width: 260px; 
+            background: #050505; 
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            border-right: 1px solid var(--border);
-            flex-shrink: 0;
+            padding: 20px 15px;
         }
 
-        .brand-logo {
-            font-weight: 800;
-            color: var(--accent);
-            font-size: 1.1rem;
-            text-align: center;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-        }
+        .brand { color: var(--accent); font-weight: bold; font-size: 1.2rem; margin-bottom: 20px; text-align: left; padding-left: 10px; }
 
-        .status-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 12px;
-            background: #0a0a0a;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            border: 1px solid var(--border);
-            text-transform: uppercase;
+        .shop-status-toggle {
+            width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            cursor: pointer; margin-bottom: 30px; transition: 0.3s; text-transform: uppercase; font-size: 0.85rem;
         }
-
+        .status-open { background: rgba(39, 174, 96, 0.15); color: #2ecc71; border: 1px solid #27ae60; }
+        .status-closed { background: rgba(192, 57, 43, 0.15); color: #e74c3c; border: 1px solid #c0392b; }
         .dot { height: 8px; width: 8px; border-radius: 50%; }
-        .dot-green { background-color: var(--green); box-shadow: 0 0 10px var(--green); }
-        .dot-red { background-color: var(--red); box-shadow: 0 0 10px var(--red); }
+        .dot-open { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; }
+        .dot-closed { background: #e74c3c; box-shadow: 0 0 8px #e74c3c; }
 
-        .btn-sidebar {
-            background: transparent;
-            color: #888;
-            border: 1px solid transparent;
-            padding: 14px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
+        .nav-btn {
+            background: transparent; border: none; color: #888; padding: 16px;
+            text-align: left; font-size: 0.95rem; border-radius: 12px; margin-bottom: 8px;
+            cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: 600;
         }
+        .nav-btn.active { background: rgba(230, 126, 34, 0.15); color: var(--accent); }
+        .nav-btn i { width: 20px; text-align: center; }
 
-        .btn-sidebar:hover { background: #111; color: #fff; }
-        .btn-sidebar.active { 
-            background: rgba(230, 126, 34, 0.1); 
-            border-color: var(--accent); 
-            color: var(--accent);
+        /* Main Content */
+        .content { flex: 1; overflow-y: auto; padding: 25px; background: var(--bg-black); }
+
+        .pedidos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; height: 100%; }
+        .col-pedidos { background: #0a0a0a; border-radius: 15px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+        .col-header { padding: 18px; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; border-bottom: 1px solid var(--border); background: #0d0d0d; }
+
+        /* Item Cards */
+        .item-card {
+            background: var(--card-bg); border-radius: 12px; padding: 20px;
+            margin-bottom: 15px; display: flex; justify-content: space-between;
+            align-items: center; border: 1px solid #1a1a1a;
         }
+        .item-info h3 { margin: 0 0 8px 0; font-size: 1.1rem; color: #fff; }
+        .cat-tag { font-size: 0.65rem; background: #222; padding: 3px 8px; border-radius: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; display: inline-block; }
+        
+        .price-row { display: flex; gap: 15px; flex-wrap: wrap; color: var(--text-gray); font-size: 0.85rem; }
+        .price-row span b { color: #fff; cursor: pointer; border-bottom: 1px dashed #444; }
 
-        /* Área Principal */
-        .main-content { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            background: #000;
+        .btn-stock-status {
+            padding: 12px 20px; border-radius: 8px; border: none; font-weight: 800;
+            font-size: 0.75rem; cursor: pointer; min-width: 130px; text-transform: uppercase;
         }
+        .disponivel { background: var(--green); color: white; }
+        .esgotado { background: var(--red); color: white; }
 
-        #secao-pedidos { 
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            flex: 1; 
-            gap: 15px; 
-            padding: 15px;
-            overflow: hidden;
-        }
-
-        .coluna { 
-            background: #0a0a0a; 
-            border-radius: 16px; 
-            border: 1px solid var(--border); 
-            display: flex; 
-            flex-direction: column; 
-            max-height: 100%;
-        }
-
-        .col-header { 
-            padding: 18px; 
-            font-size: 0.8rem; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            letter-spacing: 1.5px;
-            border-bottom: 1px solid var(--border);
-            background: rgba(255,255,255,0.02);
-            border-radius: 16px 16px 0 0;
-        }
-
-        /* Cards de Pedidos Estilo Dashboard */
-        .pedido-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border);
-            border-top: 4px solid var(--accent);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .pedido-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .pedido-cliente { font-weight: 800; font-size: 1.05rem; color: #fff; }
-        .pedido-hora { font-weight: 800; color: var(--accent); background: rgba(230,126,34,0.1); padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; }
-
-        .pedido-itens {
-            background: #000;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-size: 0.95rem;
-            color: #bbb;
-            border: 1px solid #1a1a1a;
-            line-height: 1.5;
-        }
-
-        .btn-status-alt {
-            width: 100%;
-            padding: 14px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 800;
-            cursor: pointer;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.85rem;
-            transition: 0.2s;
-        }
-
-        .btn-status-alt:active { transform: scale(0.98); }
-
-        /* Estilo Stock */
-        #secao-stock, #secao-impressora { display: none; padding: 30px; overflow-y: auto; flex: 1; }
-        .card-stock-item {
-            background: var(--card-bg);
-            padding: 16px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid var(--border);
-            margin-bottom: 10px;
-        }
-
-        /* Scrollbars Elegantes */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #status-impressora { font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div class="brand-logo">O BOM SABOR</div>
+        <div class="brand">O BOM SABOR</div>
         
-        <div id="servico-status" class="status-badge">
-            <span id="indicador-dot" class="dot"></span>
-            <span id="indicador-texto">...</span>
-        </div>
-        
-        <button id="btn-pedidos" class="btn-sidebar active" onclick="mostrarTab('pedidos')">
-            <i class="fas fa-receipt"></i> Pedidos
-        </button>
-        <button id="btn-stock" class="btn-sidebar" onclick="mostrarTab('stock')">
-            <i class="fas fa-utensils"></i> Cozinha/Stock
-        </button>
-        <button id="btn-impressora" class="btn-sidebar" onclick="mostrarTab('impressora')">
-            <i class="fas fa-print"></i> Terminal
+        <button id="shop-toggle" class="shop-status-toggle status-open" onclick="toggleStore()">
+            <span id="shop-dot" class="dot dot-open"></span>
+            <span id="shop-text">Loja Aberta</span>
         </button>
 
-        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
-            <button class="btn-sidebar" onclick="toggleServico()">
-                <i class="fas fa-store"></i> Abrir/Fechar
-            </button>
-            <button class="btn-sidebar" onclick="limparHistorico()" style="color: var(--red); opacity: 0.7;">
-                <i class="fas fa-eraser"></i> Limpar Tudo
-            </button>
+        <button class="nav-btn active" id="btn-pedidos" onclick="tab('pedidos')"><i class="fas fa-receipt"></i> Pedidos</button>
+        <button class="nav-btn" id="btn-stock" onclick="tab('stock')"><i class="fas fa-utensils"></i> Cozinha/Stock</button>
+        <button class="nav-btn" id="btn-terminal" onclick="tab('terminal')"><i class="fas fa-print"></i> Terminal/Imp.</button>
+        
+        <div style="margin-top: auto;">
+            <button class="nav-btn" style="color: #555;" onclick="confirmReset()"><i class="fas fa-trash-alt"></i> Limpar Tudo</button>
         </div>
     </div>
 
-    <div class="main-content">
-        <div id="secao-pedidos">
-            <div class="coluna">
-                <div class="col-header" style="color: var(--accent)">Entrada / Cozinha</div>
-                <div id="lista-pedidos" style="padding:15px; overflow-y: auto; flex:1;"></div>
-            </div>
-            <div class="coluna">
-                <div class="col-header" style="color: var(--green)">Pronto para Entrega</div>
-                <div id="lista-pronto" style="padding:15px; overflow-y: auto; flex:1;"></div>
-            </div>
-            <div class="coluna">
-                <div class="col-header" style="color: #666">Histórico Recente</div>
-                <div id="lista-historico" style="padding:15px; overflow-y: auto; flex:1;"></div>
-            </div>
+    <div class="content">
+        <div id="view-pedidos" class="pedidos-grid">
+            <div class="col-pedidos"><div class="col-header" style="color:var(--accent)">Entrada / Cozinha</div></div>
+            <div class="col-pedidos"><div class="col-header" style="color:var(--green)">Pronto para Entrega</div></div>
+            <div class="col-pedidos"><div class="col-header" style="color:#555">Histórico Recente</div></div>
         </div>
 
-        <div id="secao-stock">
-            <h2 style="color: var(--accent); margin-top:0; font-weight:800;">Gestão de Menu</h2>
-            <div id="render-stock-container"></div>
+        <div id="view-stock" style="display:none; max-width: 950px; margin: 0 auto;">
+            <div id="render-stock"></div>
         </div>
 
-        <div id="secao-impressora">
-            <h2 style="color: var(--accent); margin-top:0;">Configuração Terminal</h2>
-            <div style="background: var(--card-bg); padding: 30px; border-radius: 16px; border: 1px solid var(--border); text-align: center;">
-                <i class="fas fa-print" style="font-size: 3rem; color: var(--accent); margin-bottom: 20px;"></i>
-                <p>Impressora de Talões: <strong style="color:var(--green)">ATIVA</strong></p>
-                <button class="btn-status-alt" style="background: #333; max-width: 300px; margin: 20px auto;" onclick="imprimirTeste()">
-                    Imprimir Talão de Teste
-                </button>
-            </div>
+        <div id="view-terminal" style="display:none; text-align: center; padding-top: 50px;">
+            <i class="fas fa-print" style="font-size: 4rem; margin-bottom: 20px; color: #333;"></i>
+            <h2>Configuração da Impressora</h2>
+            <p>Estado: <span id="status-impressora" style="color:var(--red)">Desconectado</span></p>
+            <button class="nav-btn" style="background:#222; margin: 20px auto; display:block; padding: 15px 30px;" onclick="testarConexao()">Verificar Conexão</button>
         </div>
     </div>
-
-    <div id="area-impressao"></div>
 
     <script>
-        // [MESMO SCRIPT FIREBASE E LÓGICA QUE JÁ TENS]
         const firebaseConfig = {
             apiKey: "AIzaSyDXdL8jBVtbPb7igyrorQMK2_hlfxHrB5Q",
             authDomain: "o-bom-sabor.firebaseapp.com",
@@ -279,197 +138,169 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // LISTA DE PRODUTOS COMPLETA
+        // LISTA COMPLETA DE PRODUTOS
         const produtos = [
-            { nome: "Petinga frita c/ arroz de tomate", dia: "SEGUNDA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Bacalhau à Brás", dia: "SEGUNDA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Jardineira de vitela", dia: "SEGUNDA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Arroz de Marisco", dia: "TERÇA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Bifinhos de Lombo", dia: "TERÇA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Carne de Porco á Alentejana", dia: "TERÇA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Arroz de pato", dia: "QUARTA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Entrecosto c/Favas", dia: "QUARTA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Solha Frita", dia: "QUARTA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Feijoada de Lingueirão", dia: "QUINTA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Bacalhau c/Natas", dia: "QUINTA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Panados de frango", dia: "QUINTA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Bifinhos c/Natas", dia: "SEXTA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Lasanha", dia: "SEXTA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Choco Frito", dia: "SEXTA-FEIRA", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Arroz de Polvo", dia: "SÁBADO", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Esparguete á bolonhesa", dia: "SÁBADO", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Filetes de Linguado", dia: "SÁBADO", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Bacalhau á casa", dia: "DOMINGO", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Feijoada de choco", dia: "DOMINGO", cat: "Pratos do Dia", temMeia: true },
-            { nome: "Massa c/frango", dia: "DOMINGO", cat: "Pratos do Dia", temMeia: true },
+            // PRATOS DO DIA
+            { nome: "Petinga frita c/ arroz de tomate", cat: "Pratos do Dia", dia: "SEGUNDA", temMeia: true },
+            { nome: "Bacalhau à Brás", cat: "Pratos do Dia", dia: "SEGUNDA", temMeia: true },
+            { nome: "Jardineira de vitela", cat: "Pratos do Dia", dia: "SEGUNDA", temMeia: true },
+            { nome: "Arroz de Marisco", cat: "Pratos do Dia", dia: "TERÇA", temMeia: true },
+            { nome: "Bifinhos de Lombo", cat: "Pratos do Dia", dia: "TERÇA", temMeia: true },
+            { nome: "Carne de Porco á Alentejana", cat: "Pratos do Dia", dia: "TERÇA", temMeia: true },
+            { nome: "Arroz de pato", cat: "Pratos do Dia", dia: "QUARTA", temMeia: true },
+            { nome: "Entrecosto c/Favas", cat: "Pratos do Dia", dia: "QUARTA", temMeia: true },
+            { nome: "Solha Frita", cat: "Pratos do Dia", dia: "QUARTA", temMeia: true },
+            { nome: "Feijoada de Lingueirão", cat: "Pratos do Dia", dia: "QUINTA", temMeia: true },
+            { nome: "Bacalhau c/Natas", cat: "Pratos do Dia", dia: "QUINTA", temMeia: true },
+            { nome: "Panados de frango", cat: "Pratos do Dia", dia: "QUINTA", temMeia: true },
+            { nome: "Bifinhos c/Natas", cat: "Pratos do Dia", dia: "SEXTA", temMeia: true },
+            { nome: "Lasanha", cat: "Pratos do Dia", dia: "SEXTA", temMeia: true },
+            { nome: "Choco Frito", cat: "Pratos do Dia", dia: "SEXTA", temMeia: true },
+            { nome: "Arroz de Polvo", cat: "Pratos do Dia", dia: "SÁBADO", temMeia: true },
+            { nome: "Esparguete á bolonhesa", cat: "Pratos do Dia", dia: "SÁBADO", temMeia: true },
+            { nome: "Filetes de Linguado", cat: "Pratos do Dia", dia: "SÁBADO", temMeia: true },
+            { nome: "Bacalhau á casa", cat: "Pratos do Dia", dia: "DOMINGO", temMeia: true },
+            { nome: "Feijoada de choco", cat: "Pratos do Dia", dia: "DOMINGO", temMeia: true },
+            { nome: "Massa c/frango", cat: "Pratos do Dia", dia: "DOMINGO", temMeia: true },
             { nome: "Sopa de Legumes", cat: "Sopa" },
+
+            // PIZZAS
+            { nome: "Pizza Portuguesa", cat: "Pizzas", temTamanhos: true },
+            { nome: "Pizza Camponesa", cat: "Pizzas", temTamanhos: true },
+            { nome: "Pizza Tropical", cat: "Pizzas", temTamanhos: true },
+            { nome: "Pizza do Mar", cat: "Pizzas", temTamanhos: true },
+            { nome: "Pizza de Frango", cat: "Pizzas", temTamanhos: true },
+            { nome: "Pizza Vegetariana", cat: "Pizzas", temTamanhos: true },
+            { nome: "Pizza Pepperoni", cat: "Pizzas", temTamanhos: true },
+            { nome: "Pizza 3 Ingredientes", cat: "Pizzas", temTamanhos: true },
+
+            // GRELHADOS
             { nome: "Frango (Chicken)", cat: "Grelhados", temMeia: true },
             { nome: "Entrecosto de Porco", cat: "Grelhados", temMeia: true },
             { nome: "Febras", cat: "Grelhados", temMeia: true },
-            { nome: "Entremeada de Porco", cat: "Grelhados", temMeia: true },
             { nome: "Bife frango grelhado", cat: "Grelhados", temMeia: true },
+            { nome: "Entremeada de Porco", cat: "Grelhados", temMeia: true },
             { nome: "Salsichas", cat: "Grelhados", temMeia: true },
             { nome: "Secretos de Porco Ibérico", cat: "Grelhados", temMeia: true },
             { nome: "Picanha", cat: "Grelhados", temMeia: true },
             { nome: "Dourada Escalada", cat: "Grelhados" },
             { nome: "Robalo escalado c/ batatas assadas", cat: "Grelhados" },
             { nome: "Sardinhas", cat: "Grelhados" },
-            { nome: "Pizza Portuguesa", cat: "Pizzas" },
-            { nome: "Pizza Camponesa", cat: "Pizzas" },
-            { nome: "Pizza Tropical", cat: "Pizzas" },
-            { nome: "Pizza do Mar", cat: "Pizzas" },
-            { nome: "Pizza de Frango", cat: "Pizzas" },
-            { nome: "Pizza Vegetariana", cat: "Pizzas" },
-            { nome: "Pizza Pepperoni", cat: "Pizzas" },
-            { nome: "Pizza 3 Ingredientes", cat: "Pizzas" },
+
+            // ACOMPANHAMENTOS
+            { nome: "Dose de Batata Frita", cat: "Acompanhamentos" },
+            { nome: "Meia Dose de Batata Frita", cat: "Acompanhamentos" },
+            { nome: "Dose de Arroz", cat: "Acompanhamentos" },
+            { nome: "Meia Dose de Arroz", cat: "Acompanhamentos" },
+            { nome: "Salada Mista", cat: "Acompanhamentos" },
+
+            // PETISCOS
             { nome: "Caracóis 1LT", cat: "Petiscos" },
             { nome: "Pastéis de Bacalhau (un)", cat: "Petiscos" },
             { nome: "Rissóis de Leitão (un)", cat: "Petiscos" },
             { nome: "Rissóis de Carne (un)", cat: "Petiscos" },
             { nome: "Rissóis de Camarão (un)", cat: "Petiscos" },
-            { nome: "Dose de Batata Frita", cat: "Extras" },
-            { nome: "Meia Dose de Batata Frita", cat: "Extras" },
-            { nome: "Dose de Arroz", cat: "Extras" },
-            { nome: "Meia Dose de Arroz", cat: "Extras" },
-            { nome: "Salada Mista", cat: "Extras" },
-            { nome: "Arroz Doce", cat: "Doces" },
+
+            // BEBIDAS & SOBREMESAS
             { nome: "Coca Cola", cat: "Bebidas" },
             { nome: "Nectar", cat: "Bebidas" },
             { nome: "Fanta Laranja", cat: "Bebidas" },
             { nome: "Sprite", cat: "Bebidas" },
             { nome: "Ice Tea", cat: "Bebidas" },
             { nome: "Cerveja Sagres", cat: "Bebidas" },
-            { nome: "Casal Garcia", cat: "Bebidas" }
+            { nome: "Casal Garcia", cat: "Bebidas" },
+            { nome: "Arroz Doce", cat: "Sobremesas" }
         ];
 
-        function mostrarTab(tab) {
-            ['pedidos', 'stock', 'impressora'].forEach(s => {
-                document.getElementById('secao-' + s).style.display = (s === tab ? (s === 'pedidos' ? 'grid' : 'block') : 'none');
-                document.getElementById('btn-' + s).classList.toggle('active', s === tab);
-            });
-            if(tab === 'stock') carregarStock();
-        }
+        function slug(str) { return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w]/g, '_'); }
 
-        function gerarId(nome) {
-            return nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
-        }
-
-        function carregarStock() {
-            const container = document.getElementById('render-stock-container');
-            container.innerHTML = '';
+        function renderizarStock() {
+            const container = document.getElementById('render-stock');
+            container.innerHTML = '<h2 style="color:var(--gold); font-size:1rem; margin-bottom:20px;">GESTÃO DE STOCK E PREÇOS</h2>';
+            
             const categorias = [...new Set(produtos.map(p => p.cat))];
 
             categorias.forEach(cat => {
-                const h = document.createElement('h3');
-                h.className = 'cat-header'; h.style = "color:var(--gold); border-bottom:1px solid #333; padding:20px 0 10px 0; text-transform:uppercase; font-size:0.9rem;";
+                const h = document.createElement('div');
+                h.style = "color:var(--accent); font-weight:800; font-size:0.8rem; margin:30px 0 15px 5px; text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid #222; padding-bottom:5px;";
                 h.innerText = cat;
                 container.appendChild(h);
 
                 produtos.filter(p => p.cat === cat).forEach(p => {
-                    const id = gerarId(p.nome);
+                    const id = slug(p.nome);
                     const card = document.createElement('div');
-                    card.className = 'card-stock-item';
+                    card.className = 'item-card';
                     
-                    let botoesPreco = `<span class="btn-action" onclick="mudarPreco('${id}', 'preco')">Dose: <span id="val-${id}">0.00€</span></span>`;
-                    if (p.temMeia) {
-                        botoesPreco += ` <span class="btn-action" onclick="mudarPreco('${id}', 'preco_meia')">1/2: <span id="val-meia-${id}">0.00€</span></span>`;
+                    let htmlPrecos = '';
+                    if(p.temTamanhos) {
+                        htmlPrecos = `
+                            <span>Mini: <b onclick="setPrice('${id}','mini')" id="mini-${id}">0.00€</b></span>
+                            <span>Média: <b onclick="setPrice('${id}','media')" id="media-${id}">0.00€</b></span>
+                            <span>Fam: <b onclick="setPrice('${id}','familiar')" id="fam-${id}">0.00€</b></span>
+                        `;
+                    } else if(p.temMeia) {
+                        htmlPrecos = `
+                            <span>Dose: <b onclick="setPrice('${id}','preco')" id="p-${id}">0.00€</b></span>
+                            <span>1/2: <b onclick="setPrice('${id}','preco_meia')" id="m-${id}">0.00€</b></span>
+                        `;
+                    } else {
+                        htmlPrecos = `<span>Preço: <b onclick="setPrice('${id}','preco')" id="p-${id}">0.00€</b></span>`;
                     }
 
                     card.innerHTML = `
-                        <div style="flex:1;">
-                            <strong id="name-${id}" style="font-size:1.1rem;">${p.nome}</strong>
-                            <div style="margin-top:8px;">${botoesPreco} <span class="btn-action" onclick="mudarNome('${id}')">Editar Nome</span></div>
+                        <div style="flex:1">
+                            <span class="cat-tag">${p.dia ? p.dia : cat}</span>
+                            <h3 id="n-${id}">${p.nome}</h3>
+                            <div class="price-row">${htmlPrecos} <span style="color:var(--accent); cursor:pointer; font-size:0.7rem; margin-left:10px" onclick="setName('${id}')">EDITAR NOME</span></div>
                         </div>
-                        <div id="status-btn-container-${id}"></div>
+                        <div id="btn-area-${id}"></div>
                     `;
                     container.appendChild(card);
 
-                    db.ref('estoque/' + id).on('value', snap => {
-                        const d = snap.val();
-                        if (d) {
-                            if (d.nome_custom) document.getElementById(`name-${id}`).innerText = d.nome_custom;
-                            if (document.getElementById(`val-${id}`)) document.getElementById(`val-${id}`).innerText = (d.preco || 0).toFixed(2) + "€";
-                            if (document.getElementById(`val-meia-${id}`)) document.getElementById(`val-meia-${id}`).innerText = (d.preco_meia || 0).toFixed(2) + "€";
-                            const btnCont = document.getElementById(`status-btn-container-${id}`);
-                            btnCont.innerHTML = `<button class="btn-status-alt" onclick="toggleDispo('${id}', ${d.esgotado})" style="background: ${d.esgotado ? 'var(--red)' : 'var(--green)'}; margin:0; width:140px;">${d.esgotado ? 'ESGOTADO' : 'DISPONÍVEL'}</button>`;
-                        }
+                    db.ref('estoque/'+id).on('value', s => {
+                        const val = s.val() || {};
+                        if(val.nome_custom) document.getElementById(`n-${id}`).innerText = val.nome_custom;
+                        if(document.getElementById(`p-${id}`)) document.getElementById(`p-${id}`).innerText = (val.preco || 0).toFixed(2) + "€";
+                        if(document.getElementById(`m-${id}`)) document.getElementById(`m-${id}`).innerText = (val.preco_meia || 0).toFixed(2) + "€";
+                        if(document.getElementById(`mini-${id}`)) document.getElementById(`mini-${id}`).innerText = (val.mini || 0).toFixed(2) + "€";
+                        if(document.getElementById(`media-${id}`)) document.getElementById(`media-${id}`).innerText = (val.media || 0).toFixed(2) + "€";
+                        if(document.getElementById(`fam-${id}`)) document.getElementById(`fam-${id}`).innerText = (val.familiar || 0).toFixed(2) + "€";
+                        
+                        const esg = val.esgotado || false;
+                        document.getElementById(`btn-area-${id}`).innerHTML = `
+                            <button onclick="toggleStock('${id}', ${esg})" class="btn-stock-status ${esg ? 'esgotado' : 'disponivel'}">
+                                ${esg ? 'ESGOTADO' : 'DISPONÍVEL'}
+                            </button>`;
                     });
                 });
             });
         }
 
-        function mudarPreco(id, campo) {
-            const n = prompt("Novo preço (€):");
-            if(n && !isNaN(n)) db.ref('estoque/'+id).update({ [campo]: parseFloat(n) });
-        }
-
-        function mudarNome(id) {
-            const n = prompt("Novo nome:");
-            if (n) db.ref('estoque/' + id).update({ nome_custom: n });
-        }
-
-        function toggleDispo(id, status) {
-            db.ref('estoque/'+id).update({ esgotado: !status });
-        }
-
-        db.ref('pedidos').on('value', snap => {
-            const lN = document.getElementById('lista-pedidos');
-            const lP = document.getElementById('lista-pronto');
-            const lH = document.getElementById('lista-historico');
-            lN.innerHTML = ''; lP.innerHTML = ''; lH.innerHTML = '';
-
-            snap.forEach(sSnap => {
-                const p = sSnap.val();
-                const id = sSnap.key;
-                const card = document.createElement('div');
-                card.className = 'pedido-card';
-                
-                let itensH = p.itens.map(i => `<div>• ${i.quantidade}x <strong>${i.nome}</strong></div>`).join('');
-                card.innerHTML = `
-                    <div class="pedido-meta">
-                        <span class="pedido-cliente">#${id.slice(-4)} - ${p.cliente}</span>
-                        <span class="pedido-hora">${p.hora_levantamento || '--:--'}</span>
-                    </div>
-                    <div class="pedido-itens">${itensH}</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin:10px 0;">
-                        <span style="color:var(--gold); font-weight:800; font-size:1.1rem;">${p.total}</span>
-                        <button onclick='imprimirPedido(${JSON.stringify(p)})' style="background:none; border:1px solid #444; color:#888; padding:5px 10px; border-radius:6px; cursor:pointer;"><i class="fas fa-print"></i></button>
-                    </div>
-                `;
-
-                if (!p.status || p.status === 'novo') {
-                    card.innerHTML += `<button class="btn-status-alt" style="background:var(--green)" onclick="mudarStatus('${id}', 'pronto')">Marcar como Pronto</button>`;
-                    lN.appendChild(card);
-                } else if (p.status === 'pronto') {
-                    card.innerHTML += `<button class="btn-status-alt" style="background:#444" onclick="mudarStatus('${id}', 'entregue')">Finalizar Entrega</button>`;
-                    lP.appendChild(card);
-                } else {
-                    card.style.opacity = "0.4";
-                    card.style.borderTopColor = "#333";
-                    lH.appendChild(card);
-                }
-            });
+        // Funções de Controlo
+        function toggleStore() { db.ref('estado_loja').once('value', s => db.ref('estado_loja').set(!s.val())); }
+        db.ref('estado_loja').on('value', s => {
+            const open = s.val();
+            const btn = document.getElementById('shop-toggle');
+            btn.className = 'shop-status-toggle ' + (open ? 'status-open' : 'status-closed');
+            document.getElementById('shop-dot').className = 'dot ' + (open ? 'dot-open' : 'dot-closed');
+            document.getElementById('shop-text').innerText = open ? 'Loja Aberta' : 'Loja Fechada';
         });
 
-        function mudarStatus(id, s) { db.ref('pedidos/' + id).update({ status: s }); }
-        function limparHistorico() { if(confirm("Apagar todos os registos?")) db.ref('pedidos').remove(); }
-
-        function imprimirPedido(p) {
-            const area = document.getElementById('area-impressao');
-            area.innerHTML = `<div style="text-align:center;"><h2>O BOM SABOR</h2><p>-------------------------</p></div><p>CLIENTE: ${p.cliente}</p><p>HORA: ${p.hora_levantamento || ''}</p><p>-------------------------</p>${p.itens.map(i => `<div>${i.quantidade}x ${i.nome}</div>`).join('')}<p>-------------------------</p><h3>TOTAL: ${p.total}</h3>`;
-            window.print();
+        function tab(t) {
+            document.getElementById('view-pedidos').style.display = t === 'pedidos' ? 'grid' : 'none';
+            document.getElementById('view-stock').style.display = t === 'stock' ? 'block' : 'none';
+            document.getElementById('view-terminal').style.display = t === 'terminal' ? 'block' : 'none';
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-'+t).classList.add('active');
+            if(t === 'stock') renderizarStock();
         }
 
-        function imprimirTeste() { imprimirPedido({cliente:"TESTE SISTEMA", total:"0.00€", itens:[{quantidade:1, nome:"Teste Impressão OK"}]}); }
-        function toggleServico() { db.ref('configuracoes/loja_aberta').once('value', s => db.ref('configuracoes/loja_aberta').set(!s.val())); }
+        function setPrice(id, c) { const p = prompt("Novo Preço:"); if(p) db.ref('estoque/'+id).update({[c]: parseFloat(p)}); }
+        function setName(id) { const n = prompt("Novo Nome:"); if(n) db.ref('estoque/'+id).update({nome_custom: n}); }
+        function toggleStock(id, s) { db.ref('estoque/'+id).update({esgotado: !s}); }
+        function testarConexao() { alert("A procurar impressora... Erro: Dispositivo não encontrado."); }
 
-        db.ref('configuracoes/loja_aberta').on('value', s => {
-            const aberto = s.val();
-            document.getElementById('indicador-dot').className = aberto ? 'dot dot-green' : 'dot dot-red';
-            document.getElementById('indicador-texto').innerText = aberto ? 'LOJA ABERTA' : 'LOJA FECHADA';
-        });
-
-        mostrarTab('pedidos');
+        tab('pedidos');
     </script>
 </body>
 </html>

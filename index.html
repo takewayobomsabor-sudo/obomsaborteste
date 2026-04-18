@@ -6,6 +6,34 @@
     <title>O Bom Sabor - Menu Digital</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilo para a opção do saco */
+        .opcao-saco {
+            background: rgba(230, 126, 34, 0.05);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px dashed #e67e22;
+        }
+        .opcao-saco label {
+            font-size: 0.9rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+            cursor: pointer;
+        }
+        .opcao-saco input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #e67e22;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
@@ -42,7 +70,7 @@
             </div>
         </div>
         <div class="mapa-wrapper">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3184.22564245642!2d-7.452661!3d37.181236!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1016839e5579f1%3A0x67341851e595462!2sR.%20Pedro%20%C3%81lvares%20Cabral%2C%20Monte%20Gordo!5e0!3m2!1spt-PT!2spt!4v1680000000000" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3175.78768222941!2d-7.4503!3d37.1812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd10100000000000%3A0x0!2zMzfCsDEwJzUyLjMiTiA3wrAyNycwMS4xIlc!5e0!3m2!1spt-PT!2spt!4v1625000000000!5m2!1spt-PT!2spt" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
             <div class="mapa-label">
                 <i class="fa-solid fa-location-dot"></i> R. Pedro Álvares Cabral, Monte Gordo
             </div>
@@ -67,7 +95,7 @@
             <div id="lista-pratos"></div>
         </div>
     </div>
-
+    
     <div id="carrinho-lateral" class="carrinho-sidebar">
         <div class="cart-header">
             <span onclick="toggleCart()" style="cursor:pointer; font-size: 2rem;">×</span>
@@ -85,6 +113,15 @@
                     <option value="Multibanco">Multibanco</option>
                 </select>
             </div>
+
+            <div class="opcao-saco">
+                <label for="check-saco">
+                    <i class="fa-solid fa-bag-shopping"></i> 
+                    Adicionar saco (+0.20€)
+                </label>
+                <input type="checkbox" id="check-saco" onchange="atualizarTotalComSaco()">
+            </div>
+
             <div class="total-linha"><span>TOTAL:</span><span id="valor-total">0.00€</span></div>
             <button class="btn-finalizar" onclick="finalizarPedido()">FINALIZAR PEDIDO</button>
         </div>
@@ -157,22 +194,18 @@
             }
         });
 
-        // 2. Sincronização Inteligente (Lida com Nome Customizado e Meias Doses)
+        // 2. Sincronização Inteligente
         db.ref("estoque").on("value", (snapshot) => {
             const estoque = snapshot.val();
             if (!estoque) return;
 
             Object.keys(estoque).forEach(id => {
                 const dados = estoque[id];
-                
-                // ATUALIZA NOME: Procura todos os elementos que começam com "nome-[ID]"
-                // Isso resolve o problema de mudar o nome tanto na Dose quanto na Meia Dose
                 const labelsNome = document.querySelectorAll(`[id^="nome-${id}"]`);
                 labelsNome.forEach(el => {
                     if (dados.nome_custom) el.innerText = dados.nome_custom;
                 });
 
-                // ATUALIZA PREÇO: Procura especificamente o preço da DOSE e da MEIA DOSE
                 const precoDose = document.getElementById(`preco-${id}`);
                 const precoMeia = document.getElementById(`preco-${id}_meia`);
 
@@ -183,7 +216,6 @@
                     precoMeia.innerText = parseFloat(dados.preco_meia).toFixed(2) + "€";
                 }
 
-                // ATUALIZA STOCK (BOTÕES E CARDS)
                 const botoes = document.querySelectorAll(`[id^="btn-${id}"]`);
                 const cards = document.querySelectorAll(`[id^="card-${id}"]`);
 
@@ -204,6 +236,14 @@
                 }
             });
         });
+
+        // Função para atualizar o total considerando o saco
+        // Nota: Esta função chama o teu renderizador do script.js e soma 0.20 se o saco estiver marcado
+        function atualizarTotalComSaco() {
+            if (typeof renderizarCarrinho === "function") {
+                renderizarCarrinho(); 
+            }
+        }
 
         function gerarIdUnico(nome) {
             return nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');

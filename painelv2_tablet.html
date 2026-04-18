@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>COMANDO CENTRAL - O BOM SABOR</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -26,17 +26,18 @@
             margin: 0;
             display: flex;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
         }
 
-        /* Sidebar */
+        /* Sidebar - Fixa na esquerda */
         .sidebar {
-            width: 280px;
+            width: 240px;
             background: #000;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             border-right: 1px solid #333;
             flex-shrink: 0;
         }
@@ -48,8 +49,8 @@
             padding: 12px;
             background: #111;
             border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 0.85rem;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
             font-weight: bold;
             border: 1px solid #222;
         }
@@ -62,106 +63,135 @@
             background: var(--card-bg);
             color: white;
             border: 1px solid #333;
-            padding: 14px;
+            padding: 12px;
             border-radius: 8px;
             cursor: pointer;
             transition: 0.2s;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             text-align: left;
             width: 100%;
+            font-size: 0.9rem;
         }
 
         .btn-sidebar:hover { background: #222; }
         .btn-sidebar.active { background: var(--accent); border-color: var(--accent); font-weight: bold; }
 
-        /* Conteúdo */
-        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        /* Conteúdo Principal */
+        .main-content { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden;
+            background: #000;
+        }
 
-        #secao-pedidos { display: flex; flex: 1; gap: 15px; padding: 15px; overflow-x: auto; }
-        #secao-stock, #secao-impressora { display: none; padding: 25px; overflow-y: auto; flex: 1; }
+        /* AJUSTE DAS COLUNAS PARA NÃO CORTAR */
+        #secao-pedidos { 
+            display: flex; 
+            flex: 1; 
+            gap: 10px; 
+            padding: 10px; 
+            overflow-x: auto; /* Permite scroll horizontal se as colunas forem largas */
+            -webkit-overflow-scrolling: touch;
+        }
 
-        .coluna { flex: 1; min-width: 320px; background: #0a0a0a; border-radius: 10px; border: 1px solid #222; display: flex; flex-direction: column; }
-        .col-header { padding: 15px; border-bottom: 1px solid #222; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; }
+        .coluna { 
+            flex: 1; 
+            min-width: 300px; /* Largura mínima para o texto não encavalar */
+            max-width: 400px; 
+            background: #0a0a0a; 
+            border-radius: 10px; 
+            border: 1px solid #222; 
+            display: flex; 
+            flex-direction: column; 
+            height: calc(100vh - 20px);
+        }
 
-        /* Pedidos Cards */
+        .col-header { 
+            padding: 12px; 
+            border-bottom: 1px solid #222; 
+            font-size: 0.85rem; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            text-align: center;
+        }
+
+        /* Cards de Pedidos */
         .pedido-card {
             background: var(--card-bg);
             border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 12px;
+            margin-bottom: 12px;
             border-left: 4px solid var(--accent);
             animation: fadeIn 0.3s ease;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .btn-status-alt {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-top: 10px;
             border: none;
             border-radius: 5px;
             font-weight: bold;
             cursor: pointer;
             color: white;
+            font-size: 0.9rem;
         }
 
-        /* Itens de Stock */
-        .cat-header { color: var(--gold); border-bottom: 2px solid var(--gold); margin: 35px 0 15px 0; padding-bottom: 5px; font-size: 1.2rem; text-transform: uppercase; }
+        /* Seção de Stock */
+        #secao-stock, #secao-impressora { display: none; padding: 20px; overflow-y: auto; flex: 1; }
+
+        .cat-header { color: var(--gold); border-bottom: 2px solid var(--gold); margin: 25px 0 10px 0; padding-bottom: 5px; font-size: 1.1rem; text-transform: uppercase; }
+        
         .card-stock-item {
             background: var(--card-bg);
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border: 1px solid #222;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            gap: 10px;
         }
 
         .btn-action {
             background: #2a2a2a;
             color: var(--gold);
             border: 1px dashed #555;
-            padding: 6px 12px;
+            padding: 8px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 0.8rem;
-            margin-right: 8px;
+            font-size: 0.75rem;
             display: inline-block;
+            margin-top: 5px;
         }
 
         .btn-status {
-            padding: 12px 18px;
+            padding: 10px;
             border-radius: 6px;
             border: none;
             font-weight: bold;
             cursor: pointer;
-            min-width: 130px;
+            min-width: 110px;
             color: white;
+            font-size: 0.8rem;
         }
 
-        /* Estilo de Impressão */
+        /* Impressão */
         #area-impressao { display: none; }
         @media print {
             body * { display: none !important; }
-            #area-impressao { 
-                display: block !important; 
-                color: black !important; 
-                background: white !important; 
-                font-family: 'Courier New', Courier, monospace; 
-                width: 100%;
-                font-size: 12pt;
-                padding: 10px;
-            }
+            #area-impressao { display: block !important; color: black !important; background: white !important; font-family: 'Courier New', monospace; width: 100%; font-size: 12pt; padding: 10px; }
         }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <h2 style="color: var(--accent); margin-bottom: 5px;">O BOM SABOR</h2>
+        <h2 style="color: var(--accent); font-size: 1.2rem; margin-bottom: 5px;">O BOM SABOR</h2>
         
         <div id="servico-status" class="status-badge">
             <span id="indicador-dot" class="dot"></span>
@@ -175,7 +205,7 @@
             <i class="fas fa-boxes"></i> Stock e Preços
         </button>
         <button id="btn-impressora" class="btn-sidebar" onclick="mostrarTab('impressora')">
-            <i class="fas fa-print"></i> Config. Impressora
+            <i class="fas fa-print"></i> Impressora
         </button>
 
         <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
@@ -192,15 +222,15 @@
         <div id="secao-pedidos">
             <div class="coluna">
                 <div class="col-header" style="color: var(--accent)">Novos / Em Curso</div>
-                <div id="lista-pedidos" style="padding:10px; overflow-y: auto;"></div>
+                <div id="lista-pedidos" style="padding:10px; overflow-y: auto; flex:1;"></div>
             </div>
             <div class="coluna">
                 <div class="col-header" style="color: var(--green)">Pronto ✅</div>
-                <div id="lista-pronto" style="padding:10px; overflow-y: auto;"></div>
+                <div id="lista-pronto" style="padding:10px; overflow-y: auto; flex:1;"></div>
             </div>
             <div class="coluna">
                 <div class="col-header" style="color: #888">Histórico</div>
-                <div id="lista-historico" style="padding:10px; overflow-y: auto;"></div>
+                <div id="lista-historico" style="padding:10px; overflow-y: auto; flex:1;"></div>
             </div>
         </div>
 
@@ -210,11 +240,11 @@
         </div>
 
         <div id="secao-impressora">
-            <h2 style="color: var(--accent); margin-top:0;">Impressora Térmica</h2>
+            <h2 style="color: var(--accent); margin-top:0;">Impressora</h2>
             <div style="background: #111; padding: 20px; border-radius: 10px; border: 1px solid #333;">
-                <p>Estado: <strong style="color:var(--green)">Conectada (Nativa Browser)</strong></p>
-                <button class="btn-sidebar" style="width: 100%; justify-content: center;" onclick="imprimirTeste()">
-                    <i class="fas fa-print"></i> Imprimir Talão de Teste
+                <p>Estado: <strong style="color:var(--green)">Conectada</strong></p>
+                <button class="btn-sidebar" style="justify-content: center;" onclick="imprimirTeste()">
+                    <i class="fas fa-print"></i> Testar Impressão
                 </button>
             </div>
         </div>
@@ -233,7 +263,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // LISTA DE PRODUTOS (Mapeado para identificar quem tem meia dose)
+        // LISTA DE PRODUTOS
         const produtos = [
             { nome: "Petinga frita c/ arroz de tomate", dia: "SEGUNDA-FEIRA", cat: "Pratos do Dia", temMeia: true },
             { nome: "Bacalhau à Brás", dia: "SEGUNDA-FEIRA", cat: "Pratos do Dia", temMeia: true },
@@ -296,7 +326,6 @@
             { nome: "Casal Garcia", cat: "Bebidas" }
         ];
 
-        // TABS
         function mostrarTab(tab) {
             ['pedidos', 'stock', 'impressora'].forEach(s => {
                 document.getElementById('secao-' + s).style.display = (s === tab ? (s === 'pedidos' ? 'flex' : 'block') : 'none');
@@ -305,7 +334,6 @@
             if(tab === 'stock') carregarStock();
         }
 
-        // GESTÃO DE STOCK
         function gerarId(nome) {
             return nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
         }
@@ -325,35 +353,17 @@
                     const card = document.createElement('div');
                     card.className = 'card-stock-item';
                     
-                    // Lógica de botões: Se tem meia dose, mostra dois botões de preço
-                    let botoesPreco = `
-                        <span class="btn-action" onclick="mudarPreco('${id}', 'preco')">
-                            <i class="fas fa-tag"></i> Dose: <span id="val-${id}">0.00€</span> ✎
-                        </span>
-                    `;
-
+                    let botoesPreco = `<span class="btn-action" onclick="mudarPreco('${id}', 'preco')">Dose: <span id="val-${id}">0.00€</span></span>`;
                     if (p.temMeia) {
-                        botoesPreco += `
-                            <span class="btn-action" onclick="mudarPreco('${id}', 'preco_meia')">
-                                <i class="fas fa-tag"></i> 1/2 Dose: <span id="val-meia-${id}">0.00€</span> ✎
-                            </span>
-                        `;
+                        botoesPreco += ` <span class="btn-action" onclick="mudarPreco('${id}', 'preco_meia')">1/2: <span id="val-meia-${id}">0.00€</span></span>`;
                     }
 
                     card.innerHTML = `
-                        <div>
-                            <small style="color:#666">${p.dia || cat}</small>
-                            <strong id="name-${id}" style="display:block; font-size:1.1rem; margin-bottom:5px;">${p.nome}</strong>
-                            <div>
-                                ${botoesPreco}
-                                <span class="btn-action" onclick="mudarNome('${id}')">
-                                    <i class="fas fa-edit"></i> Trocar Nome
-                                </span>
-                            </div>
+                        <div style="flex:1;">
+                            <strong id="name-${id}">${p.nome}</strong>
+                            <div>${botoesPreco} <span class="btn-action" onclick="mudarNome('${id}')">Nome</span></div>
                         </div>
-                        <div id="status-btn-container-${id}">
-                             <button class="btn-status" style="background:var(--green)">DISPONÍVEL</button>
-                        </div>
+                        <div id="status-btn-container-${id}"></div>
                     `;
                     container.appendChild(card);
 
@@ -361,23 +371,11 @@
                         const d = snap.val();
                         if (d) {
                             if (d.nome_custom) document.getElementById(`name-${id}`).innerText = d.nome_custom;
-                            
-                            // Atualiza preço da Dose
-                            if (document.getElementById(`val-${id}`)) {
-                                document.getElementById(`val-${id}`).innerText = (d.preco || 0).toFixed(2) + "€";
-                            }
-                            
-                            // Atualiza preço da Meia Dose (se existir o elemento)
-                            if (document.getElementById(`val-meia-${id}`)) {
-                                document.getElementById(`val-meia-${id}`).innerText = (d.preco_meia || 0).toFixed(2) + "€";
-                            }
+                            if (document.getElementById(`val-${id}`)) document.getElementById(`val-${id}`).innerText = (d.preco || 0).toFixed(2) + "€";
+                            if (document.getElementById(`val-meia-${id}`)) document.getElementById(`val-meia-${id}`).innerText = (d.preco_meia || 0).toFixed(2) + "€";
                             
                             const btnCont = document.getElementById(`status-btn-container-${id}`);
-                            btnCont.innerHTML = `
-                                <button class="btn-status" onclick="toggleDispo('${id}', ${d.esgotado})" 
-                                        style="background: ${d.esgotado ? 'var(--red)' : 'var(--green)'}">
-                                    ${d.esgotado ? 'ESGOTADO' : 'DISPONÍVEL'}
-                                </button>`;
+                            btnCont.innerHTML = `<button class="btn-status" onclick="toggleDispo('${id}', ${d.esgotado})" style="background: ${d.esgotado ? 'var(--red)' : 'var(--green)'}">${d.esgotado ? 'ESGOTADO' : 'DISPONÍVEL'}</button>`;
                         }
                     });
                 });
@@ -385,122 +383,69 @@
         }
 
         function mudarPreco(id, campo) {
-            const label = (campo === 'preco') ? "Dose Inteira" : "Meia Dose";
-            const n = prompt(`Novo preço para ${label} (€):`);
-            if(n && !isNaN(n)) {
-                let updates = {};
-                updates[campo] = parseFloat(n);
-                db.ref('estoque/'+id).update(updates);
-            }
+            const n = prompt("Novo preço (€):");
+            if(n && !isNaN(n)) db.ref('estoque/'+id).update({ [campo]: parseFloat(n) });
         }
 
         function mudarNome(id) {
-            const atual = document.getElementById(`name-${id}`).innerText;
-            const n = prompt("Novo nome para o produto:", atual);
-            if (n && n !== atual) {
-                db.ref('estoque/' + id).update({ nome_custom: n });
-            }
+            const n = prompt("Novo nome:");
+            if (n) db.ref('estoque/' + id).update({ nome_custom: n });
         }
 
         function toggleDispo(id, status) {
             db.ref('estoque/'+id).update({ esgotado: !status });
         }
 
-        // GESTÃO DE PEDIDOS
+        // PEDIDOS
         db.ref('pedidos').on('value', snap => {
-            const listaNovos = document.getElementById('lista-pedidos');
-            const listaPronto = document.getElementById('lista-pronto');
-            const listaHist = document.getElementById('lista-historico');
-            
-            listaNovos.innerHTML = ''; listaPronto.innerHTML = ''; listaHist.innerHTML = '';
+            const lN = document.getElementById('lista-pedidos');
+            const lP = document.getElementById('lista-pronto');
+            const lH = document.getElementById('lista-historico');
+            lN.innerHTML = ''; lP.innerHTML = ''; lH.innerHTML = '';
 
-            snap.forEach(pedidoSnap => {
-                const p = pedidoSnap.val();
-                const id = pedidoSnap.key;
+            snap.forEach(sSnap => {
+                const p = sSnap.val();
+                const id = sSnap.key;
                 const card = document.createElement('div');
                 card.className = 'pedido-card';
                 
-                let itensHTML = p.itens.map(i => `<div>${i.quantidade}x ${i.nome}</div>`).join('');
-                
+                let itensH = p.itens.map(i => `<div>${i.quantidade}x ${i.nome}</div>`).join('');
                 card.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <strong>#${id.slice(-4)} - ${p.cliente}</strong>
-                        <span style="font-size:0.8rem; color:#888">${p.hora_levantamento || ''}</span>
-                    </div>
-                    <div style="background:#222; padding:8px; border-radius:4px; margin-bottom:10px;">${itensHTML}</div>
-                    <div style="font-weight:bold; color:var(--gold); margin-bottom:10px;">Total: ${p.total}</div>
-                    <div style="font-size:0.8rem; color:#aaa; margin-bottom:10px;">Pag: ${p.pagamento}</div>
-                    <button class="btn-sidebar" onclick='imprimirPedido(${JSON.stringify(p)})' style="padding:8px; margin-bottom:5px; background:#333; font-size:0.8rem;">
-                        <i class="fas fa-print"></i> Imprimir Talão
-                    </button>
+                    <div style="display:flex; justify-content:space-between;"><strong>#${id.slice(-4)} - ${p.cliente}</strong><span>${p.hora_levantamento || ''}</span></div>
+                    <div style="background:#222; padding:8px; margin:8px 0; border-radius:4px;">${itensH}</div>
+                    <div style="color:var(--gold)">Total: ${p.total}</div>
+                    <button class="btn-sidebar" onclick='imprimirPedido(${JSON.stringify(p)})' style="padding:5px; font-size:0.7rem; margin-top:5px; justify-content:center;"><i class="fas fa-print"></i> Imprimir</button>
                 `;
 
                 if (!p.status || p.status === 'novo') {
-                    card.innerHTML += `<button class="btn-status-alt" style="background:var(--green)" onclick="mudarStatus('${id}', 'pronto')">MARCAR COMO PRONTO</button>`;
-                    listaNovos.appendChild(card);
+                    card.innerHTML += `<button class="btn-status-alt" style="background:var(--green)" onclick="mudarStatus('${id}', 'pronto')">PRONTO</button>`;
+                    lN.appendChild(card);
                 } else if (p.status === 'pronto') {
-                    card.innerHTML += `<button class="btn-status-alt" style="background:#555" onclick="mudarStatus('${id}', 'entregue')">MARCAR ENTREGUE</button>`;
-                    listaPronto.appendChild(card);
+                    card.innerHTML += `<button class="btn-status-alt" style="background:#555" onclick="mudarStatus('${id}', 'entregue')">ENTREGUE</button>`;
+                    lP.appendChild(card);
                 } else {
-                    card.style.borderLeftColor = "#444";
-                    card.style.opacity = "0.7";
-                    listaHist.appendChild(card);
+                    card.style.opacity = "0.6";
+                    lH.appendChild(card);
                 }
             });
         });
 
-        function mudarStatus(id, novoStatus) {
-            db.ref('pedidos/' + id).update({ status: novoStatus });
-        }
+        function mudarStatus(id, s) { db.ref('pedidos/' + id).update({ status: s }); }
+        function limparHistorico() { if(confirm("Apagar tudo?")) db.ref('pedidos').remove(); }
 
-        function limparHistorico() {
-            if(confirm("Deseja apagar todos os pedidos?")) {
-                db.ref('pedidos').remove();
-            }
-        }
-
-        // IMPRESSÃO
         function imprimirPedido(p) {
             const area = document.getElementById('area-impressao');
-            area.innerHTML = `
-                <div style="text-align:center;">
-                    <h2 style="margin:0;">O BOM SABOR</h2>
-                    <p>Take-away & Grelhados</p>
-                    <p>--------------------------------</p>
-                </div>
-                <p><strong>CLIENTE:</strong> ${p.cliente}</p>
-                <p><strong>LEVANTAMENTO:</strong> ${p.hora_levantamento || ''}</p>
-                <p><strong>PAGAMENTO:</strong> ${p.pagamento || ''}</p>
-                <p>--------------------------------</p>
-                ${p.itens.map(i => `<div>${i.quantidade}x ${i.nome}</div>`).join('')}
-                <p>--------------------------------</p>
-                <h3 style="text-align:right;">TOTAL: ${p.total}</h3>
-                <div style="text-align:center; margin-top:20px;">
-                    <p>Obrigado e Bom Apetite!</p>
-                </div>
-            `;
+            area.innerHTML = `<div style="text-align:center;"><h2>O BOM SABOR</h2><p>-------------------------</p></div><p>CLIENTE: ${p.cliente}</p><p>HORA: ${p.hora_levantamento || ''}</p><p>-------------------------</p>${p.itens.map(i => `<div>${i.quantidade}x ${i.nome}</div>`).join('')}<p>-------------------------</p><h3>TOTAL: ${p.total}</h3>`;
             window.print();
         }
 
-        function imprimirTeste() {
-            imprimirPedido({
-                cliente: "TESTE",
-                total: "0.00€",
-                itens: [{quantidade: 1, nome: "Teste de Impressora"}]
-            });
-        }
-
-        // STATUS DA LOJA
-        function toggleServico() {
-            db.ref('configuracoes/loja_aberta').once('value', s => db.ref('configuracoes/loja_aberta').set(!s.val()));
-        }
+        function imprimirTeste() { imprimirPedido({cliente:"TESTE", total:"0€", itens:[{quantidade:1, nome:"Teste Impressão"}]}); }
+        function toggleServico() { db.ref('configuracoes/loja_aberta').once('value', s => db.ref('configuracoes/loja_aberta').set(!s.val())); }
 
         db.ref('configuracoes/loja_aberta').on('value', s => {
             const aberto = s.val();
-            const dot = document.getElementById('indicador-dot');
-            const txt = document.getElementById('indicador-texto');
-            dot.className = aberto ? 'dot dot-green' : 'dot dot-red';
-            txt.innerText = aberto ? 'LOJA ABERTA' : 'LOJA FECHADA';
+            document.getElementById('indicador-dot').className = aberto ? 'dot dot-green' : 'dot dot-red';
+            document.getElementById('indicador-texto').innerText = aberto ? 'LOJA ABERTA' : 'LOJA FECHADA';
         });
 
         mostrarTab('pedidos');

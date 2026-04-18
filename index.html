@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Bom Sabor - Menu Digital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="cart-btn-fixed" onclick="toggleCart()">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <span id="cart-count">0</span>
+    </div>
+
+    <section class="hero">
+        <div id="status-loja">
+            <span class="neon-vermelho">● FECHADO</span>
+        </div>
+
+        <div class="hero-content">
+            <h1 class="logo-texto">O Bom Sabor</h1>
+            <p class="subtitulo">COMIDA TRADICIONAL EM MONTE GORDO</p>
+            <button id="btn-menu-dinamico" class="btn-principal" onclick="abrirMenu()">
+                VER MENU COMPLETO
+            </button>
+        </div>
+    </section>
+
+    <section class="info-footer">
+        <div class="horarios-container">
+            <div class="coluna-horario">
+                <h3><i class="fa-regular fa-clock"></i> Horário de Atendimento</h3>
+                <p>Segunda - Domingo: 11:00 - 13:45</p>
+                <p>Segunda - Sábado: 18:00 - 20:45</p>
+            </div>
+            <div class="coluna-horario">
+                <h3><i class="fa-solid fa-utensils"></i> Serviço de Take-away</h3>
+                <p>Almoço: 11:40 - 13:45</p>
+                <p>Jantar: 18:45 - 20:40</p>
+            </div>
+        </div>
+        <div class="mapa-wrapper">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3184.22564245642!2d-7.452661!3d37.181236!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1016839e5579f1%3A0x67341851e595462!2sR.%20Pedro%20%C3%81lvares%20Cabral%2C%20Monte%20Gordo!5e0!3m2!1spt-PT!2spt!4v1680000000000" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            <div class="mapa-label">
+                <i class="fa-solid fa-location-dot"></i> R. Pedro Álvares Cabral, Monte Gordo
+            </div>
+        </div>
+    </section>
+
+    <div id="modal-menu" class="modal">
+        <div class="modal-content">
+            <span class="fechar-modal" onclick="fecharMenu()">×</span>
+            <h2 id="titulo-modal">MENU</h2>
+            <div class="menu-categorias-wrapper">
+                <div class="categorias-scroll">
+                    <div class="cat-item active" onclick="filtrar('Dia')"><i class="fa-solid fa-star"></i><span>Hoje</span></div>
+                    <div class="cat-item" onclick="filtrar('Grelhados')"><i class="fa-solid fa-fire-burner"></i><span>Grelhados</span></div>
+                    <div class="cat-item" onclick="filtrar('Pizzas')"><i class="fa-solid fa-pizza-slice"></i><span>Pizzas</span></div>
+                    <div class="cat-item" onclick="filtrar('Petiscos')"><i class="fa-solid fa-shrimp"></i><span>Petiscos</span></div>
+                    <div class="cat-item" onclick="filtrar('Sobremesas')"><i class="fa-solid fa-ice-cream"></i><span>Doces</span></div>
+                    <div class="cat-item" onclick="filtrar('Acompanhamentos')"><i class="fa-solid fa-bowl-rice"></i><span>Extras</span></div>
+                    <div class="cat-item" onclick="filtrar('Bebidas')"><i class="fa-solid fa-bottle-water"></i><span>Bebidas</span></div>
+                </div>
+            </div>
+            <div id="lista-pratos"></div>
+        </div>
+    </div>
+
+    <div id="carrinho-lateral" class="carrinho-sidebar">
+        <div class="cart-header">
+            <span onclick="toggleCart()" style="cursor:pointer; font-size: 2rem;">×</span>
+            <h2>O SEU PEDIDO</h2>
+        </div>
+        <div id="itens-lista" class="cart-body"></div>
+        <div class="cart-footer">
+            <div class="campo-form-carrinho"><label>Nome *</label><input type="text" id="cliente-nome" required></div>
+            <div class="campo-form-carrinho"><label>Telemóvel *</label><input type="tel" id="cliente-tel" required></div>
+            <div class="campo-form-carrinho"><label>Email</label><input type="email" id="cliente-email"></div>
+            <div class="campo-form-carrinho"><label>Hora Levantamento *</label><select id="hora-pedido"></select></div>
+            <div class="campo-form-carrinho"><label>Pagamento *</label>
+                <select id="metodo-pagamento">
+                    <option value="MB Way">MB Way</option>
+                    <option value="Multibanco">Multibanco</option>
+                </select>
+            </div>
+            <div class="total-linha"><span>TOTAL:</span><span id="valor-total">0.00€</span></div>
+            <button class="btn-finalizar" onclick="finalizarPedido()">FINALIZAR PEDIDO</button>
+        </div>
+    </div>
+
+    <div id="modal-detalhe-pizza" class="modal" style="display:none; align-items:center; justify-content:center;">
+        <div class="modal-content" style="max-width: 400px; border: 1px solid #e67e22;">
+            <h2 id="detalhe-nome-pizza" style="color:#e67e22;">Pizza</h2>
+            <div class="campo-form">
+                <label>Escolha o Tamanho:</label>
+                <select id="tamanho-pizza" onchange="atualizarPrecoFinal()">
+                    <option value="mini">Mini</option>
+                    <option value="media">Média</option>
+                    <option value="familiar">Familiar</option>
+                </select>
+            </div>
+            <div class="campo-form">
+                <label>Instruções:</label>
+                <textarea id="obs-pizza" placeholder="Ex: tirar cebola"></textarea>
+            </div>
+            <div class="campo-form" style="display:flex; align-items:center; justify-content:space-between;">
+                <label>Quantidade:</label>
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <button onclick="mudarQuantidade(-1)" class="btn-opcao" style="width:35px; height:35px;">-</button>
+                    <span id="qtd-pizza" style="font-weight:bold;">1</span>
+                    <button onclick="mudarQuantidade(1)" class="btn-opcao" style="width:35px; height:35px;">+</button>
+                </div>
+            </div>
+            <button class="btn-finalizar" onclick="confirmarPizza()">CONFIRMAR - <span id="preco-total-pizza">0.00€</span></button>
+            <p onclick="fecharOpcoes()" style="text-align:center; color:#888; cursor:pointer; margin-top:15px;">Cancelar</p>
+        </div>
+    </div>
+
+    <div id="modal-grelhados" class="modal" style="display:none; align-items:center; justify-content:center;">
+        <div class="modal-content" style="max-width: 450px; border: 1px solid #e67e22;">
+            <h2 id="grelhado-nome" style="color:#e67e22;">Grelhado</h2>
+            <div id="lista-acompanhamentos" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
+            <div class="campo-form">
+                <label>Observações:</label>
+                <textarea id="obs-grelhado" placeholder="Ex: Mal passado..."></textarea>
+            </div>
+            <button class="btn-finalizar" onclick="confirmarGrelhado()">CONFIRMAR</button>
+            <p onclick="fecharModalGrelhados()" style="text-align:center; color:#888; cursor:pointer; margin-top:15px;">Cancelar</p>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDXdL8jBVtbPb7igyrorQMK2_hlfxHrB5Q",
+            authDomain: "o-bom-sabor.firebaseapp.com",
+            projectId: "o-bom-sabor",
+            storageBucket: "o-bom-sabor.firebasestorage.app",
+            messagingSenderId: "97332979372",
+            appId: "1:97332979372:web:99ad9a0bc69525b1dd6109",
+            measurementId: "G-2EZ7G3TL7L",
+            databaseURL: "https://o-bom-sabor-default-rtdb.europe-west1.firebasedatabase.app"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        window.db = firebase.database();
+
+        // 1. Sensor do status da Loja
+        db.ref("estado_loja").on("value", (snap) => {
+            const statusElemento = document.getElementById('status-loja');
+            if (snap.val() === true) {
+                statusElemento.innerHTML = '<span class="neon-verde">● ABERTO</span>';
+            } else {
+                statusElemento.innerHTML = '<span class="neon-vermelho">● FECHADO</span>';
+            }
+        });
+
+        // 2. Sincronização Inteligente (Lida com Nome Customizado e Meias Doses)
+        db.ref("estoque").on("value", (snapshot) => {
+            const estoque = snapshot.val();
+            if (!estoque) return;
+
+            Object.keys(estoque).forEach(id => {
+                const dados = estoque[id];
+                
+                // ATUALIZA NOME: Procura todos os elementos que começam com "nome-[ID]"
+                // Isso resolve o problema de mudar o nome tanto na Dose quanto na Meia Dose
+                const labelsNome = document.querySelectorAll(`[id^="nome-${id}"]`);
+                labelsNome.forEach(el => {
+                    if (dados.nome_custom) el.innerText = dados.nome_custom;
+                });
+
+                // ATUALIZA PREÇO: Procura especificamente o preço da DOSE e da MEIA DOSE
+                const precoDose = document.getElementById(`preco-${id}`);
+                const precoMeia = document.getElementById(`preco-${id}_meia`);
+
+                if (precoDose && dados.preco) {
+                    precoDose.innerText = parseFloat(dados.preco).toFixed(2) + "€";
+                }
+                if (precoMeia && dados.preco_meia) {
+                    precoMeia.innerText = parseFloat(dados.preco_meia).toFixed(2) + "€";
+                }
+
+                // ATUALIZA STOCK (BOTÕES E CARDS)
+                const botoes = document.querySelectorAll(`[id^="btn-${id}"]`);
+                const cards = document.querySelectorAll(`[id^="card-${id}"]`);
+
+                if (dados.esgotado) {
+                    botoes.forEach(btn => {
+                        btn.innerText = "ESGOTADO";
+                        btn.disabled = true;
+                        btn.classList.add('btn-esgotado');
+                    });
+                    cards.forEach(card => card.style.opacity = "0.5");
+                } else {
+                    botoes.forEach(btn => {
+                        btn.disabled = false;
+                        if(btn.innerText === "ESGOTADO") btn.innerText = "Escolher";
+                        btn.classList.remove('btn-esgotado');
+                    });
+                    cards.forEach(card => card.style.opacity = "1");
+                }
+            });
+        });
+
+        function gerarIdUnico(nome) {
+            return nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

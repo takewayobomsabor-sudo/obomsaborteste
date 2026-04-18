@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - O Bom Sabor</title>
+    <style>
+        body { background: #121212; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; text-align: center; }
+        .container { max-width: 700px; margin: 0 auto; }
+        .item-admin { 
+            display: flex; justify-content: space-between; align-items: center;
+            background: #1e1e1e; padding: 12px; margin-bottom: 8px; border-radius: 10px;
+            border: 1px solid #333;
+        }
+        .nome-prato { font-size: 0.95rem; font-weight: bold; text-align: left; flex: 1; padding-right: 10px; }
+        .dia-tag { font-size: 0.7rem; color: #ffcc00; display: block; text-transform: uppercase; margin-bottom: 2px; }
+        button { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; min-width: 115px; }
+        .btn-disponivel { background: #27ae60; color: white; }
+        .btn-esgotado { background: #c0392b; color: white; }
+        button:hover { opacity: 0.8; }
+        h1 { color: #ffcc00; margin-bottom: 5px; }
+        h2 { color: #fff; border-bottom: 2px solid #ffcc00; padding-bottom: 5px; margin-top: 35px; font-size: 1.2rem; text-align: left; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>O Bom Sabor</h1>
+        <h3>Gestão de Stock Completa</h3>
+        <p>Clica para alternar entre Disponível/Esgotado</p>
+        <div id="lista-admin">Carregando painel...</div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDXdL8jBVtbPb7igyrorQMK2_hlfxHrB5Q",
+            authDomain: "o-bom-sabor.firebaseapp.com",
+            projectId: "o-bom-sabor",
+            storageBucket: "o-bom-sabor.appspot.com",
+            messagingSenderId: "97332979372",
+            appId: "1:97332979372:web:99ad9a0bc69525b1dd6109",
+            databaseURL: "https://o-bom-sabor-default-rtdb.europe-west1.firebasedatabase.app"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function gerarId(nome) {
+            return nome.toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/\s+/g, '_')
+                .replace(/[^\w]/g, '');
+        }
+
+        const menuCompleto = [
+            // PRATOS DO DIA (SEGUNDA A DOMINGO)
+            { nome: "Petinga frita c/ arroz de tomate", dia: "SEGUNDA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Bacalhau à Brás", dia: "SEGUNDA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Jardineira de vitela", dia: "SEGUNDA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Arroz de Marisco", dia: "TERÇA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Bifinhos de Lombo", dia: "TERÇA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Carne de Porco á Alentejana", dia: "TERÇA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Arroz de pato", dia: "QUARTA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Entrecosto c/Favas", dia: "QUARTA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Solha Frita", dia: "QUARTA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Feijoada de Lingueirão", dia: "QUINTA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Bacalhau c/Natas", dia: "QUINTA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Panados de frango", dia: "QUINTA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Bifinhos c/Natas", dia: "SEXTA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Lasanha", dia: "SEXTA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Choco Frito", dia: "SEXTA-FEIRA", cat: "Pratos do Dia" },
+            { nome: "Arroz de Polvo", dia: "SÁBADO", cat: "Pratos do Dia" },
+            { nome: "Esparguete á bolonhesa", dia: "SÁBADO", cat: "Pratos do Dia" },
+            { nome: "Filetes de Linguado", dia: "SÁBADO", cat: "Pratos do Dia" },
+            { nome: "Bacalhau á casa", dia: "DOMINGO", cat: "Pratos do Dia" },
+            { nome: "Feijoada de choco", dia: "DOMINGO", cat: "Pratos do Dia" },
+            { nome: "Massa c/frango", dia: "DOMINGO", cat: "Pratos do Dia" },
+
+            // SOPA
+            { nome: "Sopa de Legumes", cat: "Sopa" },
+
+            // GRELHADOS
+            { nome: "Frango (Chicken)", cat: "Grelhados" },
+            { nome: "Entrecosto de Porco", cat: "Grelhados" },
+            { nome: "Febras (Pork steak)", cat: "Grelhados" },
+            { nome: "Secretos de Porco Ibérico", cat: "Grelhados" },
+            { nome: "Picanha", cat: "Grelhados" },
+            { nome: "Dourada Escalada", cat: "Grelhados" },
+
+            // PIZZAS
+            { nome: "Pizza Portuguesa", cat: "Pizzas" },
+            { nome: "Pizza Camponesa", cat: "Pizzas" },
+            { nome: "Pizza Tropical", cat: "Pizzas" },
+            { nome: "Pizza do Mar", cat: "Pizzas" },
+            { nome: "Pizza de Frango", cat: "Pizzas" },
+            { nome: "Pizza Vegetariana", cat: "Pizzas" },
+            { nome: "Pizza Pepperoni", cat: "Pizzas" },
+            { nome: "Pizza 3 Ingredientes", cat: "Pizzas" },
+
+            // PETISCOS
+            { nome: "Caracóis - 1 Litro", cat: "Petiscos" },
+            { nome: "Pastéis de Bacalhau (un)", cat: "Petiscos" },
+            { nome: "Rissóis de Leitão (un)", cat: "Petiscos" },
+
+            // ACOMPANHAMENTOS (EXTRAS)
+            { nome: "Dose de Batata Frita", cat: "Extras" },
+            { nome: "1/2 Dose de Batata Frita", cat: "Extras" },
+            { nome: "Dose de Arroz", cat: "Extras" },
+            { nome: "1/2 Dose de Arroz", cat: "Extras" },
+            { nome: "Salada Mista", cat: "Extras" },
+
+            // SOBREMESAS (DOCES)
+            { nome: "Arroz Doce", cat: "Doces" },
+
+            // BEBIDAS
+            { nome: "Coca Cola", cat: "Bebidas" },
+            { nome: "Nectar", cat: "Bebidas" },
+            { nome: "Fanta Laranja", cat: "Bebidas" },
+            { nome: "Sprite", cat: "Bebidas" },
+            { nome: "Ice Tea", cat: "Bebidas" },
+            { nome: "Cerveja Sagres", cat: "Bebidas" },
+            { nome: "Casal Garcia", cat: "Bebidas" }
+        ];
+
+        function renderizar() {
+            const container = document.getElementById('lista-admin');
+            container.innerHTML = '';
+            
+            // Ordem das categorias no painel
+            const categorias = ["Pratos do Dia", "Sopa", "Grelhados", "Pizzas", "Petiscos", "Extras", "Doces", "Bebidas"];
+
+            categorias.forEach(cat => {
+                const h2 = document.createElement('h2');
+                h2.innerText = cat.toUpperCase();
+                container.appendChild(h2);
+
+                menuCompleto.filter(i => i.cat === cat).forEach(item => {
+                    const idReal = gerarId(item.nome);
+                    const div = document.createElement('div');
+                    div.className = 'item-admin';
+                    div.innerHTML = `
+                        <div class="nome-prato">
+                            <span class="dia-tag">${item.dia ? item.dia : cat}</span>
+                            ${item.nome}
+                        </div>
+                        <span id="cont-${idReal}">...</span>
+                    `;
+                    container.appendChild(div);
+
+                    db.ref('estoque/' + idReal).on('value', (snapshot) => {
+                        const esgotado = snapshot.val() ? snapshot.val().esgotado : false;
+                        const btnSpan = document.getElementById('cont-' + idReal);
+                        if(btnSpan) {
+                            btnSpan.innerHTML = `
+                                <button class="${esgotado ? 'btn-esgotado' : 'btn-disponivel'}" 
+                                        onclick="toggle('${idReal}', ${esgotado})">
+                                    ${esgotado ? 'ESGOTADO' : 'DISPONÍVEL'}
+                                </button>`;
+                        }
+                    });
+                });
+            });
+        }
+
+        function toggle(id, status) {
+            db.ref('estoque/' + id).set({ esgotado: !status });
+        }
+
+        renderizar();
+    </script>
+</body>
+</html>

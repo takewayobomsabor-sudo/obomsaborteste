@@ -1,0 +1,52 @@
+[debug] [2026-04-17T17:15:35.550Z] ----------------------------------------------------------------------
+[debug] [2026-04-17T17:15:35.552Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\arroz\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init hosting
+[debug] [2026-04-17T17:15:35.552Z] CLI Version:   15.15.0
+[debug] [2026-04-17T17:15:35.552Z] Platform:      win32
+[debug] [2026-04-17T17:15:35.553Z] Node Version:  v25.9.0
+[debug] [2026-04-17T17:15:35.553Z] Time:          Fri Apr 17 2026 18:15:35 GMT+0100 (Hora de verão da Europa Ocidental)
+[debug] [2026-04-17T17:15:35.553Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\arroz\Desktop\site
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[debug] [2026-04-17T17:15:51.486Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-17T17:15:51.486Z] > authorizing via signed-in user (pouparfacileu@gmail.com)
+[debug] [2026-04-17T17:15:51.487Z] Checked if tokens are valid: true, expires at: 1776449718014
+[debug] [2026-04-17T17:15:51.487Z] Checked if tokens are valid: true, expires at: 1776449718014
+[debug] [2026-04-17T17:15:51.487Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2026-04-17T17:15:52.004Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-04-17T17:15:52.004Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] 
+=== Hosting Setup
+[debug] [2026-04-17T17:15:52.347Z] Checked if tokens are valid: true, expires at: 1776449718014
+[debug] [2026-04-17T17:15:52.347Z] Checked if tokens are valid: true, expires at: 1776449718014
+[debug] [2026-04-17T17:15:52.347Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/o-bom-sabor [none]
+[debug] [2026-04-17T17:15:52.632Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/o-bom-sabor 200
+[debug] [2026-04-17T17:15:52.632Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/o-bom-sabor {"projectId":"o-bom-sabor","projectNumber":"97332979372","displayName":"O Bom Sabor","name":"projects/o-bom-sabor","resources":{"hostingSite":"o-bom-sabor","realtimeDatabaseInstance":"o-bom-sabor-default-rtdb"},"state":"ACTIVE","etag":"1_ac245af8-3e28-4992-bca7-f6d187148dd8"}
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
+[info] 
+[info] i  Didn't detect a .git folder. Assuming C:\Users\arroz\Desktop\site is the project root. 
+[info] i  Authorizing with GitHub to upload your service account to a GitHub repository's secrets store. 
+[info] 
+[info] Visit this URL on this device to log in:
+[info] https://github.com/login/oauth/authorize?client_id=89cf50f02ac6aaed3484&state=1021967761&redirect_uri=http%3A%2F%2Flocalhost%3A9005&scope=read%3Auser%20repo%20public_repo
+[info] 
+[info] Waiting for authentication...

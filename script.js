@@ -112,7 +112,7 @@ const acompanhamentosGrelhados = [
     { grupo: "Salada", itens: [{ n: "Salada Mista", p: 3.00 }] }
 ];
 
-// OUVINTE FIREBASE - Sincroniza em tempo real
+// OUVINTE FIREBASE
 if (typeof db !== 'undefined') {
     db.ref("estoque").on("value", (snap) => {
         window.dadosEstoque = snap.val() || {};
@@ -179,24 +179,16 @@ function filtrar(categoria) {
     lista.innerHTML = itens.map(p => {
         const meuId = gerarId(p.nome);
         const dadosFB = window.dadosEstoque[meuId] || {};
-        
-        // --- LOGICA DE NOME E PREÇO DINAMICO ---
         let nomeExibir = dadosFB.nome_custom || p.nome;
-        
-        // Se existir preco_meia no Firebase, usa esse. Se não, usa o original do código.
         let valorMeia = (dadosFB.preco_meia !== undefined && dadosFB.preco_meia !== "") ? parseFloat(dadosFB.preco_meia) : p.meia;
-        
-        // Se existir preco (inteiro) no Firebase, usa esse. Se não, tenta p.inteira ou p.preco original.
         let valorInteira = (dadosFB.preco !== undefined && dadosFB.preco !== "") ? parseFloat(dadosFB.preco) : (p.inteira || p.preco);
 
         let botoes = '';
-
         if (p.cat === "Pizzas") {
             botoes = `<button class="btn-opcao" id="btn-${meuId}" onclick="abrirOpcoesPizza('${p.nome}')">Escolher</button>`;
         } else if (p.cat === "Grelhados") {
             botoes = `<button class="btn-opcao" id="btn-${meuId}" onclick="abrirOpcoesGrelhado('${p.nome}')">Escolher</button>`;
         } else if (p.meia && p.inteira) {
-            // Layout para quem tem Meia e Inteira (Pratos do dia)
             botoes = `
                 <button class="btn-opcao" id="btn-meia-${meuId}" onclick="adicionar('${nomeExibir} (1/2)', ${valorMeia})">
                     1/2 (<span id="preco-${meuId}_meia">${valorMeia.toFixed(2)}</span>€)
@@ -205,14 +197,12 @@ function filtrar(categoria) {
                     Dose (<span id="preco-${meuId}">${valorInteira.toFixed(2)}</span>€)
                 </button>`;
         } else {
-            // Layout normal
             botoes = `<button class="btn-opcao" id="btn-${meuId}" onclick="adicionar('${nomeExibir}', ${valorInteira})">
                 Add (<span id="preco-${meuId}">${valorInteira.toFixed(2)}</span>€)
             </button>`;
         }
 
         const estiloEsgotado = dadosFB.esgotado ? 'style="opacity:0.4; filter:grayscale(1); pointer-events:none;"' : '';
-
         return `
             <div class="caixa-item" id="item-${meuId}" ${estiloEsgotado}>
                 <div class="item-info"><strong id="nome-${meuId}">${nomeExibir}</strong>${p.desc ? '<br><small>'+p.desc+'</small>' : ''}</div>
@@ -221,23 +211,18 @@ function filtrar(categoria) {
     }).join('');
 }
 
-// ... RESTANTE DAS FUNÇÕES (abrirOpcoesGrelhado, carrinho, whatsapp, etc.) MANTIDAS IGUAIS AO ORIGINAL ...
-
+// GRELHADOS, PIZZAS E CARRINHO
 function abrirOpcoesGrelhado(nome) {
     const meuId = gerarId(nome);
     const dadosFB = window.dadosEstoque[meuId] || {};
     grelhadoSelecionado = menu.find(p => p.nome === nome);
-    
     document.getElementById('grelhado-nome').innerText = dadosFB.nome_custom || nome;
     document.getElementById('obs-grelhado').value = "";
-    
     let html = "";
 
-    // NOVO: Seleção de Dose ou Meia Dose (Apenas se o produto tiver 'meia' no menu)
     if (grelhadoSelecionado.meia) {
         const pMeia = (dadosFB.preco_meia !== undefined && dadosFB.preco_meia !== "") ? parseFloat(dadosFB.preco_meia) : grelhadoSelecionado.meia;
         const pInteira = (dadosFB.preco !== undefined && dadosFB.preco !== "") ? parseFloat(dadosFB.preco) : grelhadoSelecionado.preco;
-
         html += `
             <div style="margin-top:10px; font-weight:bold; color:var(--accent); text-align:left;">TAMANHO DA DOSE</div>
             <div class="caixa-item" style="padding:10px; margin-bottom:5px; border: 1px solid #444;">
@@ -252,11 +237,9 @@ function abrirOpcoesGrelhado(nome) {
                     <input type="radio" name="tipo_dose" value="1/2" data-preco="${pMeia}">
                 </label>
             </div>
-            <hr style="border:0; border-top:1px solid #333; margin:15px 0;">
-        `;
+            <hr style="border:0; border-top:1px solid #333; margin:15px 0;">`;
     }
 
-    // Acompanhamentos (Mantém o teu código original abaixo)
     html += `<div style="text-align:left; font-size:0.8rem; color:#888; margin-bottom:5px;">ACOMPANHAMENTOS (Opcional):</div>`;
     acompanhamentosGrelhados.forEach((grupo) => {
         html += `<div style="margin-top:10px; font-weight:bold; color:#e67e22; text-align:left;">${grupo.grupo}</div>`;
@@ -268,31 +251,19 @@ function abrirOpcoesGrelhado(nome) {
                 </div>`;
         });
     });
-    
     document.getElementById('lista-acompanhamentos').innerHTML = html;
     document.getElementById('modal-grelhados').style.display = 'flex';
 }
 
 function confirmarGrelhado() {
     const checks = document.querySelectorAll('.check-acompanhamento:checked');
-    const radioDose = document.querySelector('input[name="tipo_dose"]:checked'); // NOVO
+    const radioDose = document.querySelector('input[name="tipo_dose"]:checked');
     const obs = document.getElementById('obs-grelhado').value;
     const meuId = gerarId(grelhadoSelecionado.nome);
     const dadosFB = window.dadosEstoque[meuId] || {};
-    
     let nomeFinal = dadosFB.nome_custom || grelhadoSelecionado.nome;
-    let precoFinal = 0;
-
-    // Se houver escolha de dose, ajusta preço e nome
-    if (radioDose) {
-        precoFinal = parseFloat(radioDose.getAttribute('data-preco'));
-        nomeFinal += ` (${radioDose.value})`;
-    } else {
-        // Fallback para produtos sem meia dose (ex: Robalo)
-        precoFinal = (dadosFB.preco !== undefined && dadosFB.preco !== "") ? parseFloat(dadosFB.preco) : grelhadoSelecionado.preco;
-    }
-
-    // Soma os acompanhamentos
+    let precoFinal = radioDose ? parseFloat(radioDose.getAttribute('data-preco')) : ((dadosFB.preco !== undefined && dadosFB.preco !== "") ? parseFloat(dadosFB.preco) : grelhadoSelecionado.preco);
+    if (radioDose) nomeFinal += ` (${radioDose.value})`;
     if(checks.length > 0) {
         let nomesAcomp = [];
         checks.forEach(c => {
@@ -301,9 +272,7 @@ function confirmarGrelhado() {
         });
         nomeFinal += ` + ${nomesAcomp.join(', ')}`;
     }
-    
     if(obs) nomeFinal += ` [Obs: ${obs}]`;
-    
     adicionar(nomeFinal, precoFinal);
     fecharModalGrelhados();
 }
@@ -338,6 +307,7 @@ function confirmarPizza() {
     document.getElementById('modal-detalhe-pizza').style.display = 'none';
 }
 function fecharOpcoes() { document.getElementById('modal-detalhe-pizza').style.display = 'none'; }
+
 function adicionar(nome, preco) {
     const itemExistente = carrinho.find(item => item.nome === nome);
     if (itemExistente) { itemExistente.quantidade += 1; } 
@@ -345,17 +315,21 @@ function adicionar(nome, preco) {
     atualizarCarrinho();
     document.getElementById('carrinho-lateral').classList.add('active');
 }
+
 function mudarQtdCarrinho(index, valor) {
     carrinho[index].quantidade += valor;
     if (carrinho[index].quantidade <= 0) { carrinho.splice(index, 1); }
     atualizarCarrinho();
 }
+
+// CORREÇÃO: Função atualizarCarrinho agora soma o Saco
 function atualizarCarrinho() {
     const lista = document.getElementById('itens-lista');
     const totalDoc = document.getElementById('valor-total');
     const count = document.getElementById('cart-count');
     let totalGeral = 0;
     let totalItens = 0;
+
     lista.innerHTML = carrinho.map((item, index) => {
         const subtotal = item.preco * item.quantidade;
         totalGeral += subtotal;
@@ -376,11 +350,25 @@ function atualizarCarrinho() {
                 </div>
             </div>`;
     }).join('');
+
+    // SOMA O SACO SE ESTIVER MARCADO
+    const checkSaco = document.getElementById('check-saco');
+    if (checkSaco && checkSaco.checked) {
+        totalGeral += 0.20;
+    }
+
     totalDoc.innerText = totalGeral.toFixed(2) + "€";
     if(count) { count.innerText = totalItens; count.style.display = totalItens > 0 ? 'flex' : 'none'; }
 }
+
+// Função chamada pelo HTML quando clicas na checkbox do saco
+function atualizarTotalComSaco() {
+    atualizarCarrinho();
+}
+
 function remover(index) { carrinho.splice(index, 1); atualizarCarrinho(); }
 function toggleCart() { document.getElementById('carrinho-lateral').classList.toggle('active'); }
+
 function gerarHorarios() {
     const select = document.getElementById('hora-pedido');
     if(!select) return;
@@ -401,27 +389,74 @@ function gerarHorarios() {
     }
     select.innerHTML = h;
 }
+
+// CORREÇÃO: Função finalizarPedido agora inclui o saco no Firebase e no WhatsApp
 function finalizarPedido() {
     if (carrinho.length === 0) return alert("Carrinho vazio!");
     const nome = document.getElementById('cliente-nome').value;
     const tel = document.getElementById('cliente-tel').value;
     const horaLev = document.getElementById('hora-pedido').value;
     const pag = document.getElementById('metodo-pagamento').value;
+    const querSaco = document.getElementById('check-saco').checked;
+
     if (!nome || !tel) return alert("Preencha Nome e Telemóvel!");
-    const pedidoAdmin = { cliente: nome, telefone: tel, itens: carrinho, total: document.getElementById('valor-total').innerText, hora_levantamento: horaLev, pagamento: pag };
+
+    // Cria uma cópia dos itens para o pedido
+    let itensFinal = [...carrinho];
+    if (querSaco) {
+        itensFinal.push({ nome: "Saco Plástico", preco: 0.20, quantidade: 1 });
+    }
+
+    const pedidoAdmin = { 
+        cliente: nome, 
+        telefone: tel, 
+        itens: itensFinal, 
+        total: document.getElementById('valor-total').innerText, 
+        hora_levantamento: horaLev, 
+        pagamento: pag,
+        saco: querSaco ? "Sim" : "Não"
+    };
+
     db.ref('pedidos').push(pedidoAdmin);
+
     let texto = `*NOVO PEDIDO - O BOM SABOR*%0A*CLIENTE:* ${nome}%0A*PEDIDO:*%0A`;
     carrinho.forEach(i => { texto += `${i.quantidade}x ${i.nome}: ${(i.preco * i.quantidade).toFixed(2)}€%0A`; });
+    if (querSaco) texto += `1x Saco Plástico: 0.20€%0A`;
+    
     texto += `*TOTAL:* ${pedidoAdmin.total}%0A*LEVANTAMENTO:* ${horaLev}%0A*PAGAMENTO:* ${pag}`;
     window.open(`https://wa.me/351912345678?text=${texto}`, '_blank');
 }
+
 function verificarHorario() {
     const agora = new Date();
-    const tempo = agora.getHours() * 60 + agora.getMinutes();
+    // Obtém a hora e minutos atuais
+    const hora = agora.getHours();
+    const minutos = agora.getMinutes();
+    const tempoAtualEmMinutos = (hora * 60) + minutos;
+
+    // Definição dos períodos em minutos (Hora * 60 + Minutos)
+    const inicioAlmoco = (11 * 60) + 40; // 11:40
+    const fimAlmoco    = (13 * 60) + 45; // 13:45
+    
+    const inicioJantar = (18 * 60) + 45; // 18:45
+    const fimJantar    = (20 * 60) + 45; // 20:45
+
     const statusDiv = document.getElementById('status-loja');
     if(!statusDiv) return;
-    let aberto = (tempo >= 660 && tempo <= 825) || (tempo >= 1125 && tempo <= 1240);
-    statusDiv.innerHTML = aberto ? "● ABERTO" : "○ FECHADO";
-    statusDiv.className = aberto ? "neon-verde" : "neon-vermelho";
+
+    // Lógica de Verificação
+    let aberto = (tempoAtualEmMinutos >= inicioAlmoco && tempoAtualEmMinutos <= fimAlmoco) || 
+                 (tempoAtualEmMinutos >= inicioJantar && tempoAtualEmMinutos <= fimJantar);
+
+    if (aberto) {
+        statusDiv.innerHTML = "● ABERTO";
+        statusDiv.className = "neon-verde"; // Garante que usa o estilo verde
+    } else {
+        statusDiv.innerHTML = "○ FECHADO";
+        statusDiv.className = "neon-vermelho"; // Garante que usa o estilo vermelho
+    }
 }
+
+// Executa ao carregar e atualiza a cada 1 minuto
+verificarHorario();
 setInterval(verificarHorario, 60000);

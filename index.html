@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Estilo para a opção do saco */
         .opcao-saco {
             background: rgba(230, 126, 34, 0.05);
             padding: 12px;
@@ -18,6 +17,7 @@
             align-items: center;
             border: 1px dashed #e67e22;
         }
+
         .opcao-saco label {
             font-size: 0.9rem;
             color: #fff;
@@ -27,6 +27,7 @@
             margin: 0;
             cursor: pointer;
         }
+
         .opcao-saco input[type="checkbox"] {
             width: 18px;
             height: 18px;
@@ -59,87 +60,146 @@
     <section class="info-footer">
         <div class="horarios-container">
             <div class="coluna-horario">
-                <h3><i class="fa-regular fa-clock"></i> Horário de Atendimento</h3>
+                <h3><i class="fa-regular fa-clock"></i> Horario de Atendimento</h3>
                 <p>Segunda - Domingo: 11:00 - 13:45</p>
-                <p>Segunda - Sábado: 18:00 - 20:45</p>
+                <p>Segunda - Sabado: 18:00 - 20:45</p>
             </div>
             <div class="coluna-horario">
-                <h3><i class="fa-solid fa-utensils"></i> Serviço de Take-away</h3>
-                <p>Almoço: 11:40 - 13:45</p>
+                <h3><i class="fa-solid fa-utensils"></i> Servico de Take-away</h3>
+                <p>Almoco: 11:40 - 13:45</p>
                 <p>Jantar: 18:45 - 20:40</p>
             </div>
         </div>
         <div class="mapa-wrapper">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3175.78768222941!2d-7.4503!3d37.1812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd10100000000000%3A0x0!2zMzfCsDEwJzUyLjMiTiA3wrAyNycwMS4xIlc!5e0!3m2!1spt-PT!2spt!4v1625000000000!5m2!1spt-PT!2spt" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3183.123456789!2d-7.4475!3d37.1802!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd103f6955555555%3A0x5555555555555555!2sR.%20Pedro%20Alvares%20Cabral%2C%20Monte%20Gordo!5e0!3m2!1spt!2spt!4v1620000000000!5m2!1spt!2spt" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
             <div class="mapa-label">
-                <i class="fa-solid fa-location-dot"></i> R. Pedro Álvares Cabral, Monte Gordo
+                <i class="fa-solid fa-location-dot"></i> R. Pedro Alvares Cabral, Monte Gordo
             </div>
         </div>
     </section>
 
     <div id="modal-menu" class="modal">
-        <div class="modal-content">
-            <span class="fechar-modal" onclick="fecharMenu()">×</span>
-            <h2 id="titulo-modal">MENU</h2>
-            <div class="menu-categorias-wrapper">
-                <div class="categorias-scroll">
-                    <div class="cat-item active" onclick="filtrar('Dia')"><i class="fa-solid fa-star"></i><span>Hoje</span></div>
-                    <div class="cat-item" onclick="filtrar('Grelhados')"><i class="fa-solid fa-fire-burner"></i><span>Grelhados</span></div>
-                    <div class="cat-item" onclick="filtrar('Pizzas')"><i class="fa-solid fa-pizza-slice"></i><span>Pizzas</span></div>
-                    <div class="cat-item" onclick="filtrar('Petiscos')"><i class="fa-solid fa-shrimp"></i><span>Petiscos</span></div>
-                    <div class="cat-item" onclick="filtrar('Sobremesas')"><i class="fa-solid fa-ice-cream"></i><span>Doces</span></div>
-                    <div class="cat-item" onclick="filtrar('Acompanhamentos')"><i class="fa-solid fa-bowl-rice"></i><span>Extras</span></div>
-                    <div class="cat-item" onclick="filtrar('Bebidas')"><i class="fa-solid fa-bottle-water"></i><span>Bebidas</span></div>
+        <div class="modal-content-full">
+            <div class="menu-modal-topbar">
+                <button class="btn-voltar-menu" type="button" onclick="fecharMenu()" aria-label="Voltar atras e fechar menu">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Voltar</span>
+                </button>
+                <span class="menu-modal-label">Escolha o seu prato</span>
+            </div>
+
+            <div class="menu-container">
+                <div class="categorias-sidebar">
+                    <div class="cat-item active" onclick="filtrar('Dia')">
+                        <i class="fa-solid fa-calendar-day"></i>
+                        <span>Hoje</span>
+                    </div>
+                    <div class="cat-item" onclick="filtrar('Grelhados')">
+                        <i class="fa-solid fa-fire-burner"></i>
+                        <span>Grelhados</span>
+                    </div>
+                    <div class="cat-item" onclick="filtrar('Pizzas')">
+                        <i class="fa-solid fa-pizza-slice"></i>
+                        <span>Pizzas</span>
+                    </div>
+                    <div class="cat-item" onclick="filtrar('Petiscos')">
+                        <i class="fa-solid fa-shrimp"></i>
+                        <span>Petiscos</span>
+                    </div>
+                    <div class="cat-item" onclick="filtrar('Sobremesas')">
+                        <i class="fa-solid fa-ice-cream"></i>
+                        <span>Doces</span>
+                    </div>
+                    <div class="cat-item" onclick="filtrar('Bebidas')">
+                        <i class="fa-solid fa-bottle-water"></i>
+                        <span>Bebidas</span>
+                    </div>
+                    <div class="cat-item" onclick="filtrar('Acompanhamentos')">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Extras</span>
+                    </div>
+                </div>
+
+                <div class="pratos-conteudo">
+                    <h3 id="titulo-modal">MENU DE HOJE</h3>
+                    <div id="lista-pratos"></div>
                 </div>
             </div>
-            <div id="lista-pratos"></div>
         </div>
     </div>
-    
-    <div id="carrinho-lateral" class="carrinho-sidebar">
+
+    <div id="carrinho-lateral">
         <div class="cart-header">
-            <span onclick="toggleCart()" style="cursor:pointer; font-size: 2rem;">×</span>
-            <h2>O SEU PEDIDO</h2>
+            <h3>O SEU PEDIDO</h3>
+            <span class="fechar-carrinho" onclick="toggleCart()" style="cursor:pointer; font-size:25px;">×</span>
         </div>
-        <div id="itens-lista" class="cart-body"></div>
+
+        <div class="cart-tabs">
+            <button class="tab-btn active" onclick="mudarAba('itens')">1. ITENS</button>
+            <button class="tab-btn" onclick="mudarAba('dados')">2. DADOS</button>
+        </div>
+
+        <div class="cart-body">
+            <div id="tab-itens" class="tab-content active">
+                <div id="itens-lista"></div>
+                <div class="total-container">
+                    <div class="total-linha">
+                        <span>TOTAL:</span>
+                        <span id="valor-total">0.00EUR</span>
+                    </div>
+                    <label class="opcao-saco-label">
+                        <input type="checkbox" id="check-saco" onchange="atualizarTotalComSaco()">
+                        Preciso de saco plastico (+0.20EUR)
+                    </label>
+                </div>
+            </div>
+
+            <div id="tab-dados" class="tab-content">
+                <div class="campo-form-carrinho">
+                    <label>NOME *</label>
+                    <input type="text" id="cliente-nome" placeholder="Como se chama?">
+                </div>
+                <div class="campo-form-carrinho">
+                    <label>TELEMOVEL *</label>
+                    <input type="tel" id="cliente-tel" placeholder="9xxxxxxxx">
+                </div>
+                <div class="campo-form-carrinho">
+                    <label>EMAIL</label>
+                    <input type="email" id="cliente-email" placeholder="seu@email.com">
+                </div>
+                <div class="campo-form-carrinho">
+                    <label>HORA DE LEVANTAMENTO *</label>
+                    <select id="hora-pedido"></select>
+                </div>
+                <div class="campo-form-carrinho">
+                    <label>METODO DE PAGAMENTO *</label>
+                    <select id="metodo-pagamento">
+                        <option value="MB Way">MB Way</option>
+                        <option value="Multibanco">Multibanco (No Local)</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <div class="cart-footer">
-            <div class="campo-form-carrinho"><label>Nome *</label><input type="text" id="cliente-nome" required></div>
-            <div class="campo-form-carrinho"><label>Telemóvel *</label><input type="tel" id="cliente-tel" required></div>
-            <div class="campo-form-carrinho"><label>Email</label><input type="email" id="cliente-email"></div>
-            <div class="campo-form-carrinho"><label>Hora Levantamento *</label><select id="hora-pedido"></select></div>
-            <div class="campo-form-carrinho"><label>Pagamento *</label>
-                <select id="metodo-pagamento">
-                    <option value="MB Way">MB Way</option>
-                    <option value="Multibanco">Multibanco</option>
-                </select>
-            </div>
-
-            <div class="opcao-saco">
-                <label for="check-saco">
-                    <i class="fa-solid fa-bag-shopping"></i> 
-                    Adicionar saco (+0.20€)
-                </label>
-                <input type="checkbox" id="check-saco" onchange="atualizarTotalComSaco()">
-            </div>
-
-            <div class="total-linha"><span>TOTAL:</span><span id="valor-total">0.00€</span></div>
-            <button class="btn-finalizar" onclick="finalizarPedido()">FINALIZAR PEDIDO</button>
+            <button class="btn-finalizar" onclick="finalizarPedido()">FINALIZAR NO WHATSAPP</button>
         </div>
     </div>
 
-    <div id="modal-detalhe-pizza" class="modal" style="display:none; align-items:center; justify-content:center;">
+    <div id="modal-detalhe-pizza" class="modal">
         <div class="modal-content" style="max-width: 400px; border: 1px solid #e67e22;">
             <h2 id="detalhe-nome-pizza" style="color:#e67e22;">Pizza</h2>
             <div class="campo-form">
                 <label>Escolha o Tamanho:</label>
                 <select id="tamanho-pizza" onchange="atualizarPrecoFinal()">
                     <option value="mini">Mini</option>
-                    <option value="media">Média</option>
+                    <option value="media">Media</option>
                     <option value="familiar">Familiar</option>
                 </select>
             </div>
             <div class="campo-form">
-                <label>Instruções:</label>
+                <label>Instrucoes:</label>
                 <textarea id="obs-pizza" placeholder="Ex: tirar cebola"></textarea>
             </div>
             <div class="campo-form" style="display:flex; align-items:center; justify-content:space-between;">
@@ -150,17 +210,17 @@
                     <button onclick="mudarQuantidade(1)" class="btn-opcao" style="width:35px; height:35px;">+</button>
                 </div>
             </div>
-            <button class="btn-finalizar" onclick="confirmarPizza()">CONFIRMAR - <span id="preco-total-pizza">0.00€</span></button>
+            <button class="btn-finalizar" onclick="confirmarPizza()">CONFIRMAR - <span id="preco-total-pizza">0.00EUR</span></button>
             <p onclick="fecharOpcoes()" style="text-align:center; color:#888; cursor:pointer; margin-top:15px;">Cancelar</p>
         </div>
     </div>
 
-    <div id="modal-grelhados" class="modal" style="display:none; align-items:center; justify-content:center;">
+    <div id="modal-grelhados" class="modal">
         <div class="modal-content" style="max-width: 450px; border: 1px solid #e67e22;">
             <h2 id="grelhado-nome" style="color:#e67e22;">Grelhado</h2>
             <div id="lista-acompanhamentos" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
             <div class="campo-form">
-                <label>Observações:</label>
+                <label>Observacoes:</label>
                 <textarea id="obs-grelhado" placeholder="Ex: Mal passado..."></textarea>
             </div>
             <button class="btn-finalizar" onclick="confirmarGrelhado()">CONFIRMAR</button>
@@ -168,8 +228,17 @@
         </div>
     </div>
 
+    <div id="toast-carrinho" class="toast-carrinho" aria-live="polite" aria-atomic="true">
+        <i class="fa-solid fa-circle-check"></i>
+        <div>
+            <strong>Adicionado ao carrinho</strong>
+            <span id="toast-carrinho-texto"></span>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDXdL8jBVtbPb7igyrorQMK2_hlfxHrB5Q",
@@ -181,10 +250,10 @@
             measurementId: "G-2EZ7G3TL7L",
             databaseURL: "https://o-bom-sabor-default-rtdb.europe-west1.firebasedatabase.app"
         };
+
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         window.db = firebase.database();
 
-        // 1. Sensor do status da Loja
         db.ref("estado_loja").on("value", (snap) => {
             const statusElemento = document.getElementById('status-loja');
             if (snap.val() === true) {
@@ -194,13 +263,13 @@
             }
         });
 
-        // 2. Sincronização Inteligente
         db.ref("estoque").on("value", (snapshot) => {
             const estoque = snapshot.val();
             if (!estoque) return;
 
             Object.keys(estoque).forEach(id => {
                 const dados = estoque[id];
+
                 const labelsNome = document.querySelectorAll(`[id^="nome-${id}"]`);
                 labelsNome.forEach(el => {
                     if (dados.nome_custom) el.innerText = dados.nome_custom;
@@ -208,17 +277,11 @@
 
                 const precoDose = document.getElementById(`preco-${id}`);
                 const precoMeia = document.getElementById(`preco-${id}_meia`);
-
-                if (precoDose && dados.preco) {
-                    precoDose.innerText = parseFloat(dados.preco).toFixed(2) + "€";
-                }
-                if (precoMeia && dados.preco_meia) {
-                    precoMeia.innerText = parseFloat(dados.preco_meia).toFixed(2) + "€";
-                }
+                if (precoDose && dados.preco) precoDose.innerText = parseFloat(dados.preco).toFixed(2) + "EUR";
+                if (precoMeia && dados.preco_meia) precoMeia.innerText = parseFloat(dados.preco_meia).toFixed(2) + "EUR";
 
                 const botoes = document.querySelectorAll(`[id^="btn-${id}"]`);
                 const cards = document.querySelectorAll(`[id^="card-${id}"]`);
-
                 if (dados.esgotado) {
                     botoes.forEach(btn => {
                         btn.innerText = "ESGOTADO";
@@ -229,7 +292,7 @@
                 } else {
                     botoes.forEach(btn => {
                         btn.disabled = false;
-                        if(btn.innerText === "ESGOTADO") btn.innerText = "Escolher";
+                        if (btn.innerText === "ESGOTADO") btn.innerText = "Escolher";
                         btn.classList.remove('btn-esgotado');
                     });
                     cards.forEach(card => card.style.opacity = "1");
@@ -237,16 +300,8 @@
             });
         });
 
-        // Função para atualizar o total considerando o saco
-        // Nota: Esta função chama o teu renderizador do script.js e soma 0.20 se o saco estiver marcado
         function atualizarTotalComSaco() {
-            if (typeof renderizarCarrinho === "function") {
-                renderizarCarrinho(); 
-            }
-        }
-
-        function gerarIdUnico(nome) {
-            return nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+            if (typeof atualizarCarrinho === "function") atualizarCarrinho();
         }
     </script>
     <script src="script.js"></script>
